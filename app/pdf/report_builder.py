@@ -7,6 +7,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.utils import ImageReader
+from reportlab.lib.units import mm
 from reportlab.platypus import (
     Image,
     Paragraph,
@@ -223,7 +224,7 @@ def build_et6_axis_matrix_report(
         )
     )
     story.append(top_header)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 1))  # почти вплотную к первой таблице
 
     def build_matrix_table(input_df):
         if "Name" in input_df.columns and len(input_df.columns) > 1:
@@ -288,7 +289,56 @@ def build_et6_axis_matrix_report(
 
     story.append(build_matrix_table(matrix_df))
     if matrix_df_secondary is not None:
-        story.append(Spacer(1, 14))  # ~5mm
+        story.append(Spacer(1, 1 * mm))  # 1 мм между блоками осей
         story.append(build_matrix_table(matrix_df_secondary))
+
+    # Нижние два информационных блока.
+    story.append(Spacer(1, 6 * mm))
+    footer_left_title = "<b>REDBOX:</b>"
+    footer_left = (
+        "Parameter<br/>"
+        "Aw:Achse 1, 2 = Achse 11<br/>"
+        "Bw:Achse 1, 2 = Achse 21"
+    )
+    footer_center = (
+        "<b>SCU Konfiguration</b><br/>"
+        "Aw:RADDM1 = Achse 13, RADDM2 = Achse 12<br/>"
+        "Bw:RADDM1 = Achse 23, RADDM2 = Achse 22"
+    )
+    footer_right_title = "<b>PZB</b>"
+    footer_right = (
+        "<br/>"
+        "Aw:Achse 13<br/>"
+        "Bw:Achse 23"
+    )
+
+    left_cell = Table(
+        [[Paragraph(footer_left_title, styles["Heading3"])], [Paragraph(footer_left, styles["Normal"])]],
+        colWidths=[210],
+    )
+    center_cell = Table(
+        [[Paragraph(footer_center, styles["Normal"])]],
+        colWidths=[330],
+    )
+    right_cell = Table(
+        [[Paragraph(footer_right_title, styles["Heading3"])], [Paragraph(footer_right, styles["Normal"])]],
+        colWidths=[240],
+    )
+
+    footer_table = Table([[left_cell, center_cell, right_cell]], colWidths=[210, 330, 240])
+    footer_table.setStyle(
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LINEAFTER", (1, 0), (1, 0), 2, colors.black),
+                ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ]
+        )
+    )
+    story.append(footer_table)
 
     doc.build(story)
