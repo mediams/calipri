@@ -88,12 +88,17 @@ class MainWindow(QMainWindow):
                 csv_df = load_flexible_csv(self.input_path)
                 if not {"parameter", "value"}.issubset(set(csv_df.columns)):
                     matrix_df = build_et6_focus_matrix(csv_df, axes=["11", "12", "13", "14", "42", "41", "52"])
+                    matrix_df_secondary = build_et6_focus_matrix(
+                        csv_df,
+                        axes=["51", "62", "61", "24", "23", "22", "21"],
+                    )
                     if matrix_df.empty:
                         matrix_df = build_et6_matrix(csv_df)
                     build_et6_axis_matrix_report(
                         out_path=output_path,
                         title=self.title_edit.text().strip() or "ET6 Achsmatrix Bericht (11/12/13/14/42/41/52)",
                         matrix_df=matrix_df,
+                        matrix_df_secondary=matrix_df_secondary,
                     )
                     QMessageBox.information(
                         self,

@@ -163,6 +163,7 @@ def build_et6_axis_matrix_report(
     out_path: Path,
     title: str,
     matrix_df,
+    matrix_df_secondary=None,
 ) -> None:
     """
     Lesbare Matrix auf einer A4-Seite (Querformat):
@@ -185,60 +186,71 @@ def build_et6_axis_matrix_report(
     story.append(Paragraph(f"Version: v{APP_VERSION}", styles["Normal"]))
     story.append(Spacer(1, 6))
 
-    if "Name" in matrix_df.columns and len(matrix_df.columns) > 1:
-        value_cols = [c for c in matrix_df.columns if c != "Name"]
-        matrix_df = matrix_df[
-            matrix_df[value_cols].astype(str).apply(
-                lambda row: any(cell.strip() not in {"", "nan"} for cell in row), axis=1
-            )
+    def build_matrix_table(input_df):
+        if "Name" in input_df.columns and len(input_df.columns) > 1:
+            value_cols = [c for c in input_df.columns if c != "Name"]
+            input_df = input_df[
+                input_df[value_cols].astype(str).apply(
+                    lambda row: any(cell.strip() not in {"", "nan"} for cell in row), axis=1
+                )
+            ]
+
+        headers = [str(c) for c in input_df.columns]
+        rows = [headers]
+        cell_classes: dict[tuple[int, int], str] = {}
+        for row_idx, (_, row) in enumerate(input_df.fillna("").iterrows(), start=1):
+            parsed_row: list[str] = []
+            for col_idx, value in enumerate(row.tolist()):
+                text = str(value)
+                cls = ""
+                if "|||" in text:
+                    text, cls = text.split("|||", 1)
+                    cls = cls.strip().lower()
+                parsed_row.append(text)
+                if cls in {"n.i.o", "achtung"}:
+                    cell_classes[(col_idx, row_idx)] = cls
+            rows.append(parsed_row)
+
+        table = Table(rows, repeatRows=1)
+        col_count = len(headers)
+
+        first_col_width = 95
+        other_width = max(30, (790 - first_col_width) / max(1, (col_count - 1)))
+        table._argW = [first_col_width] + [other_width] * (col_count - 1)
+
+        style_commands = [
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1d4ed8")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, 0), 8),
+            ("FONTSIZE", (0, 1), (-1, -1), 7),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+            ("ALIGN", (1, 0), (-1, -1), "CENTER"),
+            ("ALIGN", (0, 0), (0, -1), "LEFT"),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 2),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+            ("LINEBELOW", (0, 0), (-1, 0), 1.2, colors.black),
+            ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
         ]
 
-    headers = [str(c) for c in matrix_df.columns]
-    rows = [headers]
-    cell_classes: dict[tuple[int, int], str] = {}
-    for row_idx, (_, row) in enumerate(matrix_df.fillna("").iterrows(), start=1):
-        parsed_row: list[str] = []
-        for col_idx, value in enumerate(row.tolist()):
-            text = str(value)
-            cls = ""
-            if "|||" in text:
-                text, cls = text.split("|||", 1)
-                cls = cls.strip().lower()
-            parsed_row.append(text)
-            if cls in {"n.i.o", "achtung"}:
-                cell_classes[(col_idx, row_idx)] = cls
-        rows.append(parsed_row)
+        for (col_idx, row_idx), cls in cell_classes.items():
+            if cls == "n.i.o":
+                style_commands.append(
+                    ("BACKGROUND", (col_idx, row_idx), (col_idx, row_idx), colors.HexColor("#fecaca"))
+                )
+            elif cls == "achtung":
+                style_commands.append(
+                    ("BACKGROUND", (col_idx, row_idx), (col_idx, row_idx), colors.HexColor("#fef08a"))
+                )
 
-    table = Table(rows, repeatRows=1)
-    col_count = len(headers)
+        table.setStyle(TableStyle(style_commands))
+        return table
 
-    first_col_width = 95
-    other_width = max(30, (790 - first_col_width) / max(1, (col_count - 1)))
-    table._argW = [first_col_width] + [other_width] * (col_count - 1)
+    story.append(build_matrix_table(matrix_df))
+    if matrix_df_secondary is not None:
+        story.append(Spacer(1, 12))
+        story.append(Paragraph("<b>Achsgruppe 2</b>", styles["Heading3"]))
+        story.append(build_matrix_table(matrix_df_secondary))
 
-    style_commands = [
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1d4ed8")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, 0), 8),
-        ("FONTSIZE", (0, 1), (-1, -1), 7),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
-        ("ALIGN", (1, 0), (-1, -1), "CENTER"),
-        ("ALIGN", (0, 0), (0, -1), "LEFT"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("TOPPADDING", (0, 0), (-1, -1), 2),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-        ("LINEBELOW", (0, 0), (-1, 0), 1.2, colors.black),
-        ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
-    ]
-
-    for (col_idx, row_idx), cls in cell_classes.items():
-        if cls == "n.i.o":
-            style_commands.append(("BACKGROUND", (col_idx, row_idx), (col_idx, row_idx), colors.HexColor("#fecaca")))
-        elif cls == "achtung":
-            style_commands.append(("BACKGROUND", (col_idx, row_idx), (col_idx, row_idx), colors.HexColor("#fef08a")))
-
-    table.setStyle(TableStyle(style_commands))
-
-    story.append(table)
     doc.build(story)
