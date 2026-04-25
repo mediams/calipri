@@ -196,10 +196,20 @@ def build_et6_matrix(df: pd.DataFrame) -> pd.DataFrame:
         return matrix
 
     # 2) Длинный формат: ищем Name + Achse + Seite + Wert.
-    name_col = _pick_column(cols, ["name", "bez", "param", "merk", "text"])
+    name_col = _pick_column(cols, ["measpoint.name", "name", "bez", "param", "merk", "text"])
     axis_col = _pick_column(cols, ["achse", "axis"])
     side_col = _pick_column(cols, ["seite", "side", "lr", "links", "rechts"])
-    value_col = _pick_column(cols, ["wert", "value", "mess", "ist"])
+    value_col = _pick_column(cols, ["dimension.value", "wert", "value", "mess", "ist"])
+    dim_col = _pick_column(cols, ["dimension.name", "dim", "kenn", "code"])
+
+    # Частый ET6-кейс: колонка оси не называется "Achse", но значения выглядят как "Achse11".
+    if axis_col is None:
+        axis_value_pattern = re.compile(r"achse\s*\d+", flags=re.IGNORECASE)
+        for col in cols:
+            sample = working[col].astype(str).head(80)
+            if sample.map(lambda x: bool(axis_value_pattern.search(x))).mean() > 0.2:
+                axis_col = col
+                break
 
     if not (name_col and axis_col and side_col and value_col):
         # Последний fallback: возвращаем "подчищенную" таблицу, чтобы не ломать генерацию.
@@ -207,29 +217,84 @@ def build_et6_matrix(df: pd.DataFrame) -> pd.DataFrame:
         fallback.insert(0, "Name", [f"Zeile {i+1}" for i in range(len(fallback))])
         return fallback
 
-    temp = working[[name_col, axis_col, side_col, value_col]].copy()
+    use_cols = [name_col, axis_col, value_col]
+    if side_col:
+        use_cols.append(side_col)
+    if dim_col and dim_col not in use_cols:
+        use_cols.append(dim_col)
+    temp = working[use_cols].copy()
     temp[name_col] = temp[name_col].astype(str).str.strip()
     temp[axis_col] = temp[axis_col].astype(str).str.extract(r"(\d+)", expand=False).fillna("")
-    temp[side_col] = temp[side_col].map(_normalize_side).fillna("")
-    temp["wheel"] = (temp[axis_col] + temp[side_col]).str.strip()
+
+    if side_col:
+        temp[side_col] = temp[side_col].map(_normalize_side).fillna("")
+        side_series = temp[side_col]
+    else:
+        # fallback: определяем сторону из названия точки измерения (links/rechts).
+        side_series = temp[name_col].map(_normalize_side).fillna("")
+        links_mask = temp[name_col].str.lower().str.contains("links", na=False)
+        rechts_mask = temp[name_col].str.lower().str.contains("rechts", na=False)
+        side_series = side_series.mask(links_mask, "L").mask(rechts_mask, "R")
+
+    temp["side"] = side_series
+    temp["wheel"] = (temp[axis_col] + temp["side"]).str.strip()
     temp[value_col] = temp[value_col].astype(str).str.strip()
 
-    temp = temp[(temp[name_col] != "") & (temp["wheel"] != "")]
+    # Нормализуем "имя строки" под операторский вид (как на макете).
+    row_label = temp[name_col].str.lower()
+    row_label = (
+        row_label.str.replace("links", "", regex=False)
+        .str.replace("rechts", "", regex=False)
+        .str.replace("link", "", regex=False)
+        .str.replace("recht", "", regex=False)
+        .str.replace("innen", "in", regex=False)
+        .str.replace("außen", "aus", regex=False)
+        .str.replace("aussen", "aus", regex=False)
+        .str.replace(r"\s+", " ", regex=True)
+        .str.strip()
+    )
+    row_label = row_label.map(
+        lambda x: (
+            "Spurkranz"
+            if "spurkranz" in x
+            else "Raddurchm"
+            if "raddurch" in x
+            else "Brems In"
+            if "brems" in x and "in" in x
+            else "Brems Aus"
+            if "brems" in x and "aus" in x
+            else "Differenz"
+            if "differ" in x
+            else x.title()[:16]
+        )
+    )
+    temp["row_label"] = row_label
+
+    if dim_col:
+        temp["cell_value"] = temp.apply(
+            lambda r: f"{str(r[dim_col]).strip()}={str(r[value_col]).strip()}",
+            axis=1,
+        )
+    else:
+        temp["cell_value"] = temp[value_col]
+
+    temp = temp[(temp["row_label"] != "") & (temp["wheel"] != "")]
     if temp.empty:
         fallback = working.copy()
         fallback.insert(0, "Name", [f"Zeile {i+1}" for i in range(len(fallback))])
         return fallback
 
-    pivot = (
-        temp.pivot_table(
-            index=name_col,
-            columns="wheel",
-            values=value_col,
-            aggfunc="first",
-        )
-        .reset_index()
-        .rename(columns={name_col: "Name"})
+    # Если на пересечении row_label + wheel несколько значений, склеиваем.
+    grouped = (
+        temp.groupby(["row_label", "wheel"], as_index=False)["cell_value"]
+        .agg(lambda s: " | ".join(dict.fromkeys([str(v) for v in s if str(v).strip() not in {"", "nan"}])))
     )
+    pivot = grouped.pivot(index="row_label", columns="wheel", values="cell_value").reset_index()
+    pivot = pivot.rename(columns={"row_label": "Name"})
+
+    preferred_order = ["Spurkranz", "Raddurchm", "Brems In", "Brems Aus", "Differenz"]
+    pivot["_order"] = pivot["Name"].map(lambda x: preferred_order.index(x) if x in preferred_order else 999)
+    pivot = pivot.sort_values(["_order", "Name"]).drop(columns=["_order"])
 
     wheel_cols = _extract_wheel_columns([col for col in pivot.columns if col != "Name"])
     ordered_cols = ["Name"] + wheel_cols + [c for c in pivot.columns if c not in {"Name", *wheel_cols}]
