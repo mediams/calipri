@@ -51,6 +51,46 @@ def load_flexible_csv(data_path: Path) -> pd.DataFrame:
     raise ValueError("Не удалось прочитать CSV в известных кодировках")
 
 
+def extract_et6_metadata(data_path: Path) -> dict[str, str]:
+    """
+    Извлекает поля шапки из ET6 CSV:
+    MeasPlan.Name, Name, Fahrzeug, Kilometerstand, Datum.
+    """
+    target_keys = {
+        "measplan.name": "MeasPlan.Name",
+        "name": "Name",
+        "fahrzeug": "Fahrzeug",
+        "kilometerstand": "Kilometerstand",
+        "datum": "Datum",
+    }
+    metadata: dict[str, str] = {v: "" for v in target_keys.values()}
+
+    for encoding in ("utf-8-sig", "cp1252", "latin-1"):
+        try:
+            text = data_path.read_text(encoding=encoding, errors="replace")
+            lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+            for line in lines:
+                if not line.strip():
+                    continue
+                # ET6 чаще всего разделяет ;, но могут встречаться и другие варианты.
+                if ";" in line:
+                    parts = [p.strip() for p in line.split(";")]
+                elif "," in line:
+                    parts = [p.strip() for p in line.split(",")]
+                else:
+                    continue
+                if len(parts) < 2:
+                    continue
+                key_raw = parts[0].strip().lower()
+                value = parts[1].strip()
+                if key_raw in target_keys and value:
+                    metadata[target_keys[key_raw]] = value
+            return metadata
+        except Exception:  # noqa: BLE001
+            continue
+    return metadata
+
+
 def _detect_delimiter(lines: list[str]) -> str:
     candidates = [";", "\t", ",", "|"]
     sample = [line for line in lines[:50] if line.strip()]

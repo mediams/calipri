@@ -164,6 +164,7 @@ def build_et6_axis_matrix_report(
     title: str,
     matrix_df,
     matrix_df_secondary=None,
+    metadata: dict[str, str] | None = None,
 ) -> None:
     """
     Lesbare Matrix auf einer A4-Seite (Querformat):
@@ -182,9 +183,29 @@ def build_et6_axis_matrix_report(
     styles = getSampleStyleSheet()
     story = []
 
-    story.append(Paragraph(f"<b>{title}</b>", styles["Title"]))
-    story.append(Paragraph(f"Version: v{APP_VERSION}", styles["Normal"]))
-    story.append(Spacer(1, 6))
+    metadata = metadata or {}
+    header_labels = ["MeasPlan.Name", "Name", "Fahrzeug", "Kilometerstand", "Datum"]
+    header_rows = [[label, metadata.get(label, "")] for label in header_labels]
+    header_table = Table(header_rows, colWidths=[150, 240])
+    header_table.setStyle(
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+                ("FONTSIZE", (0, 0), (-1, -1), 9),
+                ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+            ]
+        )
+    )
+
+    top_header = Table(
+        [[header_table, Paragraph("<para align='right'><b>YKA CALIPRI</b></para>", styles["Title"])]],
+        colWidths=[420, 370],
+    )
+    top_header.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP")]))
+    story.append(top_header)
+    story.append(Spacer(1, 8))
 
     def build_matrix_table(input_df):
         if "Name" in input_df.columns and len(input_df.columns) > 1:
@@ -249,8 +270,7 @@ def build_et6_axis_matrix_report(
 
     story.append(build_matrix_table(matrix_df))
     if matrix_df_secondary is not None:
-        story.append(Spacer(1, 12))
-        story.append(Paragraph("<b>Achsgruppe 2</b>", styles["Heading3"]))
+        story.append(Spacer(1, 14))  # ~5mm
         story.append(build_matrix_table(matrix_df_secondary))
 
     doc.build(story)

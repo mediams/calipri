@@ -18,6 +18,7 @@ from app.core.analyzer import (
     analyze,
     build_et6_focus_matrix,
     build_et6_matrix,
+    extract_et6_metadata,
     load_flexible_csv,
     load_measurements,
 )
@@ -90,9 +91,10 @@ class MainWindow(QMainWindow):
                         matrix_df = build_et6_matrix(csv_df)
                     build_et6_axis_matrix_report(
                         out_path=output_path,
-                        title="ET6 Achsmatrix Bericht (11/12/13/14/42/41/52)",
+                        title="",
                         matrix_df=matrix_df,
                         matrix_df_secondary=matrix_df_secondary,
+                        metadata=extract_et6_metadata(self.input_path),
                     )
                     QMessageBox.information(
                         self,
