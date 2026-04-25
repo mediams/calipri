@@ -184,26 +184,44 @@ def build_et6_axis_matrix_report(
     story = []
 
     metadata = metadata or {}
-    header_labels = ["MeasPlan.Name", "Name", "Fahrzeug", "Kilometerstand", "Datum"]
-    header_rows = [[label, metadata.get(label, "")] for label in header_labels]
-    header_table = Table(header_rows, colWidths=[150, 240])
-    header_table.setStyle(
+    left_header_rows = [
+        ["MeasPlan.Name", metadata.get("MeasPlan.Name", "")],
+        ["Name", metadata.get("Name", "")],
+    ]
+    right_header_rows = [
+        ["Fahrzeug", metadata.get("Fahrzeug", "")],
+        ["Kilometerstand", metadata.get("Kilometerstand", "")],
+        ["Datum", metadata.get("Datum", "")],
+    ]
+
+    left_header_table = Table(left_header_rows, colWidths=[150, 120])
+    right_header_table = Table(right_header_rows, colWidths=[145, 160])
+
+    base_header_style = TableStyle(
+        [
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+            ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+            ("FONTSIZE", (0, 0), (-1, -1), 9),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ]
+    )
+    left_header_table.setStyle(base_header_style)
+    right_header_table.setStyle(base_header_style)
+
+    top_header = Table(
+        [[left_header_table, right_header_table, Paragraph("<para align='right'><b>(YKA) CALIPRI</b></para>", styles["Title"])]],
+        colWidths=[270, 305, 215],
+    )
+    top_header.setStyle(
         TableStyle(
             [
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-                ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
-                ("FONTSIZE", (0, 0), (-1, -1), 9),
-                ("LEFTPADDING", (0, 0), (-1, -1), 4),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
             ]
         )
     )
-
-    top_header = Table(
-        [[header_table, Paragraph("<para align='right'><b>YKA CALIPRI</b></para>", styles["Title"])]],
-        colWidths=[420, 370],
-    )
-    top_header.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP")]))
     story.append(top_header)
     story.append(Spacer(1, 8))
 

@@ -65,6 +65,7 @@ python -m app.main
 - Текущий фокус-режим: вывод по `Achse11`, `Achse12`, `Achse13`, `Achse14`, `Achse42`, `Achse41`, `Achse52` в колонки вида `11L`, `11R`, `12L`, `12R` и т.д.
 - На той же странице под первой таблицей формируется вторая таблица для `Achse51`, `Achse62`, `Achse61`, `Achse24`, `Achse23`, `Achse22`, `Achse21`.
 - Вместо заголовка ET6/Version в шапке выводятся поля из CSV: `MeasPlan.Name`, `Name`, `Fahrzeug`, `Kilometerstand`, `Datum`, а справа фиксированная надпись `YKA CALIPRI`.
+- Порядок в шапке: сначала `MeasPlan.Name`, `Name`; справа от них `Fahrzeug`, `Kilometerstand`, `Datum`; в крайнем правом углу надпись `(YKA) CALIPRI`.
 - Надпись `Achsgruppe 2` убрана; вторая таблица размещается сразу под первой (примерно 5 мм отступ).
 - Значение `unmeasured` автоматически заменяется на `---`.
 - Подсветка по `Dimension.Classification`:
