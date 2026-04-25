@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
 
 from app.core.analyzer import (
     analyze,
+    build_et6_focus_matrix_11_12,
     build_et6_matrix,
     load_flexible_csv,
     load_measurements,
@@ -86,16 +87,18 @@ class MainWindow(QMainWindow):
             if self.input_path.suffix.lower() == ".csv":
                 csv_df = load_flexible_csv(self.input_path)
                 if not {"parameter", "value"}.issubset(set(csv_df.columns)):
-                    matrix_df = build_et6_matrix(csv_df)
+                    matrix_df = build_et6_focus_matrix_11_12(csv_df)
+                    if matrix_df.empty:
+                        matrix_df = build_et6_matrix(csv_df)
                     build_et6_axis_matrix_report(
                         out_path=output_path,
-                        title=self.title_edit.text().strip() or "ET6 Achsmatrix Bericht",
+                        title=self.title_edit.text().strip() or "ET6 Achsmatrix Bericht (Achse 11/12)",
                         matrix_df=matrix_df,
                     )
                     QMessageBox.information(
                         self,
                         "Fertig",
-                        f"PDF (A4, Achsen in Spalten 11L/11R/...) gespeichert:\n{output_path}",
+                        f"PDF (A4, Fokus 11L/11R/12L/12R) gespeichert:\n{output_path}",
                     )
                     return
 

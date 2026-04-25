@@ -301,6 +301,95 @@ def build_et6_matrix(df: pd.DataFrame) -> pd.DataFrame:
     return pivot[ordered_cols]
 
 
+def build_et6_focus_matrix_11_12(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Специализированный вывод по требованиям:
+    только 4 колонки: 11L, 11R, 12L, 12R.
+    """
+    working = df.copy()
+    working.columns = [str(c).strip() for c in working.columns]
+    cols = list(working.columns)
+
+    point_col = _pick_column(cols, ["measpoint.name", "measpoint", "point"])
+    axis_col = _pick_column(cols, ["measobject.name", "achse", "axis"])
+    dim_col = _pick_column(cols, ["dimension.name", "dim"])
+    value_col = _pick_column(cols, ["dimension.value", "wert", "value"])
+
+    if not (point_col and axis_col and dim_col and value_col):
+        return build_et6_matrix(df)
+
+    ordered_rows = [
+        "Spurkranz Sh",
+        "Spurkranz Sd",
+        "Spurkranz qR",
+        "Raddurchmesser Dlk",
+        "Bremse Innen BH",
+        "Bremse Innen Bst",
+        "Bremse Innen WS",
+        "Bremse Außen BH",
+        "Bremse Außen Bst",
+        "Bremse Außen WS",
+        "Differenz Durchmesser",
+        "AR-Radinnenabstand",
+        "SR-Spurmaß",
+    ]
+    row_map: dict[str, dict[str, str]] = {row: {"11L": "", "11R": "", "12L": "", "12R": ""} for row in ordered_rows}
+
+    def classify_row(point: str, dim: str) -> str | None:
+        p = point.lower()
+        d = dim.strip()
+        if "spurkranz" in p and d in {"Sh", "Sd", "qR"}:
+            return f"Spurkranz {d}"
+        if "raddurchmesser" in p and d == "Dlk":
+            return "Raddurchmesser Dlk"
+        if "bremsscheibe" in p and "innen" in p and d in {"BH", "Bst", "WS"}:
+            return f"Bremse Innen {d}"
+        if "bremsscheibe" in p and ("außen" in p or "aussen" in p) and d in {"BH", "Bst", "WS"}:
+            return f"Bremse Außen {d}"
+        if "differenz durchmesser" in p:
+            return "Differenz Durchmesser"
+        if "ar-radinnenabstand" in p:
+            return "AR-Radinnenabstand"
+        if "sr-spurmaß" in p or "sr-spurmaß" in p or "spurmaß" in p:
+            return "SR-Spurmaß"
+        return None
+
+    for _, row in working.iterrows():
+        axis_raw = str(row[axis_col])
+        axis_num_match = re.search(r"(\d+)", axis_raw)
+        if not axis_num_match:
+            continue
+        axis_num = axis_num_match.group(1)
+        if axis_num not in {"11", "12"}:
+            continue
+
+        point = str(row[point_col]).strip()
+        dim = str(row[dim_col]).strip()
+        value = str(row[value_col]).strip()
+        if not value or value.lower() == "nan":
+            continue
+
+        row_name = classify_row(point, dim)
+        if not row_name:
+            continue
+
+        p = point.lower()
+        left_col = f"{axis_num}L"
+        right_col = f"{axis_num}R"
+
+        if any(token in p for token in ["links", " left", "(l)", " l "]):
+            row_map[row_name][left_col] = value
+        elif any(token in p for token in ["rechts", " right", "(r)", " r "]):
+            row_map[row_name][right_col] = value
+        else:
+            # Общие показатели для обеих сторон.
+            row_map[row_name][left_col] = value
+            row_map[row_name][right_col] = value
+
+    data = [{"Name": row_name, **row_map[row_name]} for row_name in ordered_rows]
+    return pd.DataFrame(data, columns=["Name", "11L", "11R", "12L", "12R"])
+
+
 def analyze(df: pd.DataFrame, thresholds: dict) -> list[ParameterResult]:
     results: list[ParameterResult] = []
 

@@ -185,6 +185,14 @@ def build_et6_axis_matrix_report(
     story.append(Paragraph(f"Version: v{APP_VERSION}", styles["Normal"]))
     story.append(Spacer(1, 6))
 
+    if "Name" in matrix_df.columns and len(matrix_df.columns) > 1:
+        value_cols = [c for c in matrix_df.columns if c != "Name"]
+        matrix_df = matrix_df[
+            matrix_df[value_cols].astype(str).apply(
+                lambda row: any(cell.strip() not in {"", "nan"} for cell in row), axis=1
+            )
+        ]
+
     headers = [str(c) for c in matrix_df.columns]
     rows = [headers]
     for _, row in matrix_df.fillna("").iterrows():
