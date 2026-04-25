@@ -39,6 +39,15 @@ pip install -r requirements.txt
 python -m app.main
 ```
 
+## Сборка `.exe` на Windows
+
+- Готовый скрипт сборки: `build_windows.bat`
+- Запускать из корня проекта двойным кликом или из `cmd`:
+
+```bat
+build_windows.bat
+```
+
 ## Версия прототипа
 
 - Текущая версия приложения хранится в `app/version.py`.
