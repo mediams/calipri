@@ -192,7 +192,6 @@ def build_et6_axis_matrix_report(
     right_header_rows = [
         ["Fahrzeug", metadata.get("Fahrzeug", "")],
         ["Kilometerstand", metadata.get("Kilometerstand", "")],
-        ["Datum", metadata.get("Datum", "")],
     ]
 
     left_header_table = Table(left_header_rows, colWidths=[150, 120])
@@ -210,8 +209,12 @@ def build_et6_axis_matrix_report(
     left_header_table.setStyle(base_header_style)
     right_header_table.setStyle(base_header_style)
 
+    brand_text = (
+        "<para align='right'><b>(YKA) CALIPRI</b><br/>"
+        f"<font size='10'>{metadata.get('Datum', '')}</font></para>"
+    )
     top_header = Table(
-        [[left_header_table, right_header_table, Paragraph("<para align='right'><b>(YKA) CALIPRI</b></para>", styles["Title"])]],
+        [[left_header_table, right_header_table, Paragraph(brand_text, styles["Title"])]],
         colWidths=[270, 305, 215],
     )
     top_header.setStyle(
@@ -224,7 +227,7 @@ def build_et6_axis_matrix_report(
         )
     )
     story.append(top_header)
-    story.append(Spacer(1, 1))  # почти вплотную к первой таблице
+    story.append(Spacer(1, 0.5 * mm))  # почти вплотную к первой таблице
 
     def build_matrix_table(input_df):
         if "Name" in input_df.columns and len(input_df.columns) > 1:
@@ -289,11 +292,11 @@ def build_et6_axis_matrix_report(
 
     story.append(build_matrix_table(matrix_df))
     if matrix_df_secondary is not None:
-        story.append(Spacer(1, 1 * mm))  # 1 мм между блоками осей
+        story.append(Spacer(1, 0.5 * mm))  # еще плотнее между блоками осей
         story.append(build_matrix_table(matrix_df_secondary))
 
     # Нижние два информационных блока.
-    story.append(Spacer(1, 6 * mm))
+    story.append(Spacer(1, 3 * mm))
     footer_left_title = "<b>REDBOX:</b>"
     footer_left = (
         "Parameter<br/>"
@@ -334,8 +337,8 @@ def build_et6_axis_matrix_report(
                 ("LINEAFTER", (1, 0), (1, 0), 2, colors.black),
                 ("LEFTPADDING", (0, 0), (-1, -1), 6),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-                ("TOPPADDING", (0, 0), (-1, -1), 4),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, -1), 2),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
             ]
         )
     )
