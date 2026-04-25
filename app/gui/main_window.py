@@ -15,10 +15,15 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app.core.analyzer import analyze, load_measurements
+from app.core.analyzer import (
+    analyze,
+    load_flexible_csv,
+    load_measurements,
+    prepare_et6_dataframe,
+)
 from app.core.config import load_config
 from app.core.license_guard import LicenseExpiredError, enforce_runtime_window
-from app.pdf.report_builder import build_report
+from app.pdf.report_builder import build_et6_single_page_report, build_report
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = ROOT / "config" / "defaults.json"
@@ -75,6 +80,25 @@ class MainWindow(QMainWindow):
                 valid_days=int(config.license.get("valid_days", 90)),
             )
 
+            output_path = self.input_path.with_name(f"{self.input_path.stem}_report.pdf")
+            # ET6 режим: в файле нет столбцов parameter/value, нужна компактная верстка одной страницы A4.
+            if self.input_path.suffix.lower() == ".csv":
+                csv_df = load_flexible_csv(self.input_path)
+                if not {"parameter", "value"}.issubset(set(csv_df.columns)):
+                    compact_df, wheel_pairs = prepare_et6_dataframe(csv_df)
+                    build_et6_single_page_report(
+                        out_path=output_path,
+                        title=self.title_edit.text().strip() or "ET6 Протокол анализа",
+                        df=compact_df,
+                        wheel_pairs=wheel_pairs,
+                    )
+                    QMessageBox.information(
+                        self,
+                        "Готово",
+                        f"PDF (A4, 2 блока, подписи до 5 символов) сохранён:\n{output_path}",
+                    )
+                    return
+
             df = load_measurements(self.input_path)
             results = analyze(df, config.thresholds)
             if not results:
@@ -85,7 +109,6 @@ class MainWindow(QMainWindow):
                 )
                 return
 
-            output_path = self.input_path.with_name(f"{self.input_path.stem}_report.pdf")
             logo_path = ROOT / config.pdf.get("logo", "") if config.pdf.get("logo") else None
             build_report(
                 out_path=output_path,
