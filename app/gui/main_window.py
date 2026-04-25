@@ -7,7 +7,6 @@ from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
     QLabel,
-    QLineEdit,
     QMainWindow,
     QMessageBox,
     QPushButton,
@@ -25,8 +24,6 @@ from app.core.analyzer import (
 from app.core.config import load_config
 from app.core.license_guard import LicenseExpiredError, enforce_runtime_window
 from app.pdf.report_builder import build_et6_axis_matrix_report, build_report
-from app.version import APP_VERSION
-
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = ROOT / "config" / "defaults.json"
 
@@ -34,12 +31,11 @@ DEFAULT_CONFIG = ROOT / "config" / "defaults.json"
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle(f"Calipri Prototyp v{APP_VERSION}")
+        self.setWindowTitle("YKA_Calipri to PDF v1.00")
         self.resize(640, 280)
 
         self.input_path: Path | None = None
 
-        self.title_edit = QLineEdit("Messbericht Achsmatrix")
         self.status_label = QLabel("Bitte CSV/XLSX-Datei auswählen")
 
         choose_btn = QPushButton("Datei auswählen")
@@ -49,8 +45,6 @@ class MainWindow(QMainWindow):
         run_btn.clicked.connect(self.generate)
 
         layout = QVBoxLayout()
-        layout.addWidget(QLabel("PDF-Titel:"))
-        layout.addWidget(self.title_edit)
         layout.addWidget(choose_btn)
         layout.addWidget(run_btn)
         layout.addWidget(self.status_label)
@@ -96,7 +90,7 @@ class MainWindow(QMainWindow):
                         matrix_df = build_et6_matrix(csv_df)
                     build_et6_axis_matrix_report(
                         out_path=output_path,
-                        title=self.title_edit.text().strip() or "ET6 Achsmatrix Bericht (11/12/13/14/42/41/52)",
+                        title="ET6 Achsmatrix Bericht (11/12/13/14/42/41/52)",
                         matrix_df=matrix_df,
                         matrix_df_secondary=matrix_df_secondary,
                     )
@@ -120,7 +114,7 @@ class MainWindow(QMainWindow):
             logo_path = ROOT / config.pdf.get("logo", "") if config.pdf.get("logo") else None
             build_report(
                 out_path=output_path,
-                title=self.title_edit.text().strip() or "Analysebericht",
+                title="Analysebericht",
                 results=results,
                 logo_path=logo_path,
             )
