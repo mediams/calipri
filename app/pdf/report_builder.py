@@ -195,8 +195,19 @@ def build_et6_axis_matrix_report(
 
     headers = [str(c) for c in matrix_df.columns]
     rows = [headers]
-    for _, row in matrix_df.fillna("").iterrows():
-        rows.append([str(v) for v in row.tolist()])
+    cell_classes: dict[tuple[int, int], str] = {}
+    for row_idx, (_, row) in enumerate(matrix_df.fillna("").iterrows(), start=1):
+        parsed_row: list[str] = []
+        for col_idx, value in enumerate(row.tolist()):
+            text = str(value)
+            cls = ""
+            if "|||" in text:
+                text, cls = text.split("|||", 1)
+                cls = cls.strip().lower()
+            parsed_row.append(text)
+            if cls in {"n.i.o", "achtung"}:
+                cell_classes[(col_idx, row_idx)] = cls
+        rows.append(parsed_row)
 
     table = Table(rows, repeatRows=1)
     col_count = len(headers)
@@ -205,25 +216,29 @@ def build_et6_axis_matrix_report(
     other_width = max(30, (790 - first_col_width) / max(1, (col_count - 1)))
     table._argW = [first_col_width] + [other_width] * (col_count - 1)
 
-    table.setStyle(
-        TableStyle(
-            [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1d4ed8")),
-                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("FONTSIZE", (0, 0), (-1, 0), 8),
-                ("FONTSIZE", (0, 1), (-1, -1), 7),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
-                ("ALIGN", (1, 0), (-1, -1), "CENTER"),
-                ("ALIGN", (0, 0), (0, -1), "LEFT"),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("TOPPADDING", (0, 0), (-1, -1), 2),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-                ("LINEBELOW", (0, 0), (-1, 0), 1.2, colors.black),
-                ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
-            ]
-        )
-    )
+    style_commands = [
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1d4ed8")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), 8),
+        ("FONTSIZE", (0, 1), (-1, -1), 7),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+        ("ALIGN", (1, 0), (-1, -1), "CENTER"),
+        ("ALIGN", (0, 0), (0, -1), "LEFT"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("TOPPADDING", (0, 0), (-1, -1), 2),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+        ("LINEBELOW", (0, 0), (-1, 0), 1.2, colors.black),
+        ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
+    ]
+
+    for (col_idx, row_idx), cls in cell_classes.items():
+        if cls == "n.i.o":
+            style_commands.append(("BACKGROUND", (col_idx, row_idx), (col_idx, row_idx), colors.HexColor("#fecaca")))
+        elif cls == "achtung":
+            style_commands.append(("BACKGROUND", (col_idx, row_idx), (col_idx, row_idx), colors.HexColor("#fef08a")))
+
+    table.setStyle(TableStyle(style_commands))
 
     story.append(table)
     doc.build(story)

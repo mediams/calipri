@@ -317,6 +317,7 @@ def build_et6_focus_matrix(df: pd.DataFrame, axes: list[str] | None = None) -> p
     axis_col = _pick_column(cols, ["measobject.name", "achse", "axis"])
     dim_col = _pick_column(cols, ["dimension.name", "dim"])
     value_col = _pick_column(cols, ["dimension.value", "wert", "value"])
+    class_col = _pick_column(cols, ["dimension.classification", "classification", "klass"])
 
     if not (point_col and axis_col and dim_col and value_col):
         return build_et6_matrix(df)
@@ -338,6 +339,7 @@ def build_et6_focus_matrix(df: pd.DataFrame, axes: list[str] | None = None) -> p
     ]
     output_columns = [f"{axis}{side}" for axis in axes for side in ("L", "R")]
     row_map: dict[str, dict[str, str]] = {row: {col: "" for col in output_columns} for row in ordered_rows}
+    class_map: dict[str, dict[str, str]] = {row: {col: "" for col in output_columns} for row in ordered_rows}
 
     def classify_row(point: str, dim: str) -> str | None:
         p = point.lower()
@@ -374,6 +376,7 @@ def build_et6_focus_matrix(df: pd.DataFrame, axes: list[str] | None = None) -> p
             continue
         if value.lower() == "unmeasured":
             value = "---"
+        cls = str(row[class_col]).strip().lower() if class_col else ""
 
         row_name = classify_row(point, dim)
         if not row_name:
@@ -385,14 +388,29 @@ def build_et6_focus_matrix(df: pd.DataFrame, axes: list[str] | None = None) -> p
 
         if any(token in p for token in ["links", " left", "(l)", " l "]):
             row_map[row_name][left_col] = value
+            class_map[row_name][left_col] = cls
         elif any(token in p for token in ["rechts", " right", "(r)", " r "]):
             row_map[row_name][right_col] = value
+            class_map[row_name][right_col] = cls
         else:
             # Общие показатели для обеих сторон.
             row_map[row_name][left_col] = value
             row_map[row_name][right_col] = value
+            class_map[row_name][left_col] = cls
+            class_map[row_name][right_col] = cls
 
-    data = [{"Name": row_name, **row_map[row_name]} for row_name in ordered_rows]
+    data: list[dict[str, str]] = []
+    for row_name in ordered_rows:
+        row_data: dict[str, str] = {"Name": row_name}
+        for col in output_columns:
+            value = row_map[row_name][col]
+            cls = class_map[row_name][col]
+            # Кодируем классификацию в ячейке для PDF-раскраски.
+            if value:
+                row_data[col] = f"{value}|||{cls}" if cls else value
+            else:
+                row_data[col] = ""
+        data.append(row_data)
     return pd.DataFrame(data, columns=["Name", *output_columns])
 
 
