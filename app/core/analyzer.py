@@ -301,11 +301,14 @@ def build_et6_matrix(df: pd.DataFrame) -> pd.DataFrame:
     return pivot[ordered_cols]
 
 
-def build_et6_focus_matrix_11_12(df: pd.DataFrame) -> pd.DataFrame:
+def build_et6_focus_matrix(df: pd.DataFrame, axes: list[str] | None = None) -> pd.DataFrame:
     """
     Специализированный вывод по требованиям:
-    только 4 колонки: 11L, 11R, 12L, 12R.
+    фиксированные колонки осей/сторон в формате 11L, 11R, ...
     """
+    if axes is None:
+        axes = ["11", "12", "13", "14", "42", "41", "52"]
+
     working = df.copy()
     working.columns = [str(c).strip() for c in working.columns]
     cols = list(working.columns)
@@ -333,7 +336,8 @@ def build_et6_focus_matrix_11_12(df: pd.DataFrame) -> pd.DataFrame:
         "AR-Radinnenabstand",
         "SR-Spurmaß",
     ]
-    row_map: dict[str, dict[str, str]] = {row: {"11L": "", "11R": "", "12L": "", "12R": ""} for row in ordered_rows}
+    output_columns = [f"{axis}{side}" for axis in axes for side in ("L", "R")]
+    row_map: dict[str, dict[str, str]] = {row: {col: "" for col in output_columns} for row in ordered_rows}
 
     def classify_row(point: str, dim: str) -> str | None:
         p = point.lower()
@@ -360,7 +364,7 @@ def build_et6_focus_matrix_11_12(df: pd.DataFrame) -> pd.DataFrame:
         if not axis_num_match:
             continue
         axis_num = axis_num_match.group(1)
-        if axis_num not in {"11", "12"}:
+        if axis_num not in set(axes):
             continue
 
         point = str(row[point_col]).strip()
@@ -368,6 +372,8 @@ def build_et6_focus_matrix_11_12(df: pd.DataFrame) -> pd.DataFrame:
         value = str(row[value_col]).strip()
         if not value or value.lower() == "nan":
             continue
+        if value.lower() == "unmeasured":
+            value = "---"
 
         row_name = classify_row(point, dim)
         if not row_name:
@@ -387,7 +393,12 @@ def build_et6_focus_matrix_11_12(df: pd.DataFrame) -> pd.DataFrame:
             row_map[row_name][right_col] = value
 
     data = [{"Name": row_name, **row_map[row_name]} for row_name in ordered_rows]
-    return pd.DataFrame(data, columns=["Name", "11L", "11R", "12L", "12R"])
+    return pd.DataFrame(data, columns=["Name", *output_columns])
+
+
+def build_et6_focus_matrix_11_12(df: pd.DataFrame) -> pd.DataFrame:
+    """Совместимость со старым вызовом."""
+    return build_et6_focus_matrix(df, axes=["11", "12"])
 
 
 def analyze(df: pd.DataFrame, thresholds: dict) -> list[ParameterResult]:
