@@ -137,6 +137,105 @@ def prepare_et6_dataframe(df: pd.DataFrame) -> tuple[pd.DataFrame, int]:
     return prepared, wheel_pairs
 
 
+def _pick_column(columns: list[str], keywords: list[str]) -> str | None:
+    lowered = {col: col.lower() for col in columns}
+    for keyword in keywords:
+        for col, lc in lowered.items():
+            if keyword in lc:
+                return col
+    return None
+
+
+def _normalize_side(raw: str) -> str | None:
+    value = str(raw).strip().lower()
+    if not value:
+        return None
+    if value in {"l", "li", "links", "left"}:
+        return "L"
+    if value in {"r", "re", "rechts", "right"}:
+        return "R"
+    if "link" in value:
+        return "L"
+    if "recht" in value:
+        return "R"
+    if value.endswith("l"):
+        return "L"
+    if value.endswith("r"):
+        return "R"
+    return None
+
+
+def _extract_wheel_columns(columns: list[str]) -> list[str]:
+    """
+    Пример подходящих колонок: 11L, 11R, 12L, 12R...
+    """
+    pattern = re.compile(r"^\s*\d{1,2}\s*[LR]\s*$", flags=re.IGNORECASE)
+    matched = [col for col in columns if pattern.match(col)]
+    return sorted(matched, key=lambda x: (int(re.sub(r"[^0-9]", "", x) or 0), x.strip().upper()))
+
+
+def build_et6_matrix(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Возвращает "читаемую" матрицу:
+      строки = параметры (например Spurkranz, Raddur...),
+      колонки = оси (11L, 11R, 12L, 12R...),
+      ячейки = значения.
+    Пустые значения оставляются пустыми.
+    """
+    working = df.copy()
+    working.columns = [str(col).strip() for col in working.columns]
+    cols = list(working.columns)
+
+    # 1) Если файл уже в широком формате (колонки типа 11L/11R), используем его как есть.
+    wheel_cols = _extract_wheel_columns(cols)
+    if wheel_cols:
+        name_col = cols[0]
+        matrix = working[[name_col] + wheel_cols].copy()
+        matrix = matrix.rename(columns={name_col: "Name"})
+        matrix["Name"] = matrix["Name"].astype(str).str.strip()
+        return matrix
+
+    # 2) Длинный формат: ищем Name + Achse + Seite + Wert.
+    name_col = _pick_column(cols, ["name", "bez", "param", "merk", "text"])
+    axis_col = _pick_column(cols, ["achse", "axis"])
+    side_col = _pick_column(cols, ["seite", "side", "lr", "links", "rechts"])
+    value_col = _pick_column(cols, ["wert", "value", "mess", "ist"])
+
+    if not (name_col and axis_col and side_col and value_col):
+        # Последний fallback: возвращаем "подчищенную" таблицу, чтобы не ломать генерацию.
+        fallback = working.copy()
+        fallback.insert(0, "Name", [f"Zeile {i+1}" for i in range(len(fallback))])
+        return fallback
+
+    temp = working[[name_col, axis_col, side_col, value_col]].copy()
+    temp[name_col] = temp[name_col].astype(str).str.strip()
+    temp[axis_col] = temp[axis_col].astype(str).str.extract(r"(\d+)", expand=False).fillna("")
+    temp[side_col] = temp[side_col].map(_normalize_side).fillna("")
+    temp["wheel"] = (temp[axis_col] + temp[side_col]).str.strip()
+    temp[value_col] = temp[value_col].astype(str).str.strip()
+
+    temp = temp[(temp[name_col] != "") & (temp["wheel"] != "")]
+    if temp.empty:
+        fallback = working.copy()
+        fallback.insert(0, "Name", [f"Zeile {i+1}" for i in range(len(fallback))])
+        return fallback
+
+    pivot = (
+        temp.pivot_table(
+            index=name_col,
+            columns="wheel",
+            values=value_col,
+            aggfunc="first",
+        )
+        .reset_index()
+        .rename(columns={name_col: "Name"})
+    )
+
+    wheel_cols = _extract_wheel_columns([col for col in pivot.columns if col != "Name"])
+    ordered_cols = ["Name"] + wheel_cols + [c for c in pivot.columns if c not in {"Name", *wheel_cols}]
+    return pivot[ordered_cols]
+
+
 def analyze(df: pd.DataFrame, thresholds: dict) -> list[ParameterResult]:
     results: list[ParameterResult] = []
 

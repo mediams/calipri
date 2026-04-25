@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import (
@@ -154,4 +154,65 @@ def build_et6_single_page_report(
         story.append(Paragraph("<b>Нижняя часть A4</b>", styles["Heading3"]))
         story.append(KeepTogether([make_table(to_table_rows(second_half))]))
 
+    doc.build(story)
+
+
+def build_et6_axis_matrix_report(
+    out_path: Path,
+    title: str,
+    matrix_df,
+) -> None:
+    """
+    Читаемая матрица на одном листе A4 (landscape):
+    - колонки: 11L, 11R, 12L, 12R...
+    - строки: параметры
+    - пустые значения оставляем пустыми
+    """
+    doc = SimpleDocTemplate(
+        str(out_path),
+        pagesize=landscape(A4),
+        leftMargin=18,
+        rightMargin=18,
+        topMargin=18,
+        bottomMargin=18,
+    )
+    styles = getSampleStyleSheet()
+    story = []
+
+    story.append(Paragraph(f"<b>{title}</b>", styles["Title"]))
+    story.append(Spacer(1, 6))
+
+    headers = [str(c) for c in matrix_df.columns]
+    rows = [headers]
+    for _, row in matrix_df.fillna("").iterrows():
+        rows.append([str(v) for v in row.tolist()])
+
+    table = Table(rows, repeatRows=1)
+    col_count = len(headers)
+
+    first_col_width = 95
+    other_width = max(30, (790 - first_col_width) / max(1, (col_count - 1)))
+    table._argW = [first_col_width] + [other_width] * (col_count - 1)
+
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1d4ed8")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, 0), 8),
+                ("FONTSIZE", (0, 1), (-1, -1), 7),
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+                ("ALIGN", (1, 0), (-1, -1), "CENTER"),
+                ("ALIGN", (0, 0), (0, -1), "LEFT"),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("TOPPADDING", (0, 0), (-1, -1), 2),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+                ("LINEBELOW", (0, 0), (-1, 0), 1.2, colors.black),
+                ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
+            ]
+        )
+    )
+
+    story.append(table)
     doc.build(story)
