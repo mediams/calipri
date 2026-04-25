@@ -18,6 +18,7 @@ from reportlab.platypus import (
 from reportlab.platypus import KeepTogether
 
 from app.core.analyzer import ParameterResult
+from app.version import APP_VERSION
 
 
 def _status_color(status: str):
@@ -46,21 +47,22 @@ def build_report(
         except Exception:  # noqa: BLE001
             story.append(
                 Paragraph(
-                    "<font color='red'>Логотип пропущен: неподдерживаемый или повреждённый файл.</font>",
+                    "<font color='red'>Logo übersprungen: Datei ist beschädigt oder nicht unterstützt.</font>",
                     styles["Normal"],
                 )
             )
             story.append(Spacer(1, 8))
 
     story.append(Paragraph(f"<b>{title}</b>", styles["Title"]))
-    story.append(Paragraph(f"Дата отчёта: {datetime.now():%Y-%m-%d %H:%M}", styles["Normal"]))
+    story.append(Paragraph(f"Erstellt am: {datetime.now():%Y-%m-%d %H:%M}", styles["Normal"]))
+    story.append(Paragraph(f"Version: v{APP_VERSION}", styles["Normal"]))
     story.append(Spacer(1, 12))
 
-    story.append(Paragraph("<b>Оглавление</b>", styles["Heading2"]))
-    story.append(Paragraph("1. Сводная таблица параметров", styles["Normal"]))
+    story.append(Paragraph("<b>Inhalt</b>", styles["Heading2"]))
+    story.append(Paragraph("1. Parameterübersicht", styles["Normal"]))
     story.append(Spacer(1, 12))
 
-    headers = ["Код", "Параметр", "Значение", "Мин", "Макс", "Ед.", "Статус"]
+    headers = ["Code", "Parameter", "Wert", "Min", "Max", "Einheit", "Status"]
     rows = [headers]
     for item in results:
         rows.append(
@@ -99,8 +101,8 @@ def build_et6_single_page_report(
     wheel_pairs: int,
 ) -> None:
     """
-    Формирует компактный одностраничный A4 PDF:
-    таблица делится на верхнюю и нижнюю части.
+    Kompakter einseitiger A4-PDF-Bericht:
+    Tabelle wird in oberen und unteren Block geteilt.
     """
     doc = SimpleDocTemplate(
         str(out_path),
@@ -114,7 +116,7 @@ def build_et6_single_page_report(
     story = []
 
     story.append(Paragraph(f"<b>{title}</b>", styles["Title"]))
-    story.append(Paragraph(f"Колёсных пар (осей): {wheel_pairs}", styles["Normal"]))
+    story.append(Paragraph(f"Achspaare: {wheel_pairs}", styles["Normal"]))
     story.append(Spacer(1, 8))
 
     split_index = max(1, len(df) // 2)
@@ -146,12 +148,12 @@ def build_et6_single_page_report(
         table._argW = [530 / col_count] * col_count
         return table
 
-    story.append(Paragraph("<b>Верхняя часть A4</b>", styles["Heading3"]))
+    story.append(Paragraph("<b>Oberer A4-Bereich</b>", styles["Heading3"]))
     story.append(KeepTogether([make_table(to_table_rows(first_half))]))
     story.append(Spacer(1, 10))
 
     if len(second_half) > 0:
-        story.append(Paragraph("<b>Нижняя часть A4</b>", styles["Heading3"]))
+        story.append(Paragraph("<b>Unterer A4-Bereich</b>", styles["Heading3"]))
         story.append(KeepTogether([make_table(to_table_rows(second_half))]))
 
     doc.build(story)
@@ -163,10 +165,10 @@ def build_et6_axis_matrix_report(
     matrix_df,
 ) -> None:
     """
-    Читаемая матрица на одном листе A4 (landscape):
-    - колонки: 11L, 11R, 12L, 12R...
-    - строки: параметры
-    - пустые значения оставляем пустыми
+    Lesbare Matrix auf einer A4-Seite (Querformat):
+    - Spalten: 11L, 11R, 12L, 12R...
+    - Zeilen: Parameter
+    - Leere Werte bleiben leer
     """
     doc = SimpleDocTemplate(
         str(out_path),
@@ -180,6 +182,7 @@ def build_et6_axis_matrix_report(
     story = []
 
     story.append(Paragraph(f"<b>{title}</b>", styles["Title"]))
+    story.append(Paragraph(f"Version: v{APP_VERSION}", styles["Normal"]))
     story.append(Spacer(1, 6))
 
     headers = [str(c) for c in matrix_df.columns]

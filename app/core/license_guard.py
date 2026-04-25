@@ -13,5 +13,5 @@ def enforce_runtime_window(start_date_iso: str, valid_days: int = 90) -> None:
     today = date.today()
     if today > expiry:
         raise LicenseExpiredError(
-            f"Срок действия прототипа истёк: {expiry.isoformat()}"
+            f"Die Laufzeit des Prototyps ist abgelaufen: {expiry.isoformat()}"
         )
