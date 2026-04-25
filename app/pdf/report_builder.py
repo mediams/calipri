@@ -201,11 +201,9 @@ def build_et6_axis_matrix_report(
         [
             ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
             ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
-            ("FONTSIZE", (0, 0), (-1, -1), 8),
-            ("LEFTPADDING", (0, 0), (-1, -1), 2),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 2),
-            ("TOPPADDING", (0, 0), (-1, -1), 1),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
+            ("FONTSIZE", (0, 0), (-1, -1), 9),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
         ]
     )
     left_header_table.setStyle(base_header_style)
@@ -213,7 +211,7 @@ def build_et6_axis_matrix_report(
 
     brand_text = (
         "<para align='right'><b>(YKA) CALIPRI</b><br/>"
-        f"<font size='8'>{metadata.get('Datum', '')}</font></para>"
+        f"<font size='10'>{metadata.get('Datum', '')}</font></para>"
     )
     top_header = Table(
         [[left_header_table, right_header_table, Paragraph(brand_text, styles["Title"])]],
@@ -267,17 +265,17 @@ def build_et6_axis_matrix_report(
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1d4ed8")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("FONTSIZE", (0, 0), (-1, 0), 6),
-                ("FONTSIZE", (0, 1), (-1, -1), 5),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
-                ("ALIGN", (1, 0), (-1, -1), "CENTER"),
-                ("ALIGN", (0, 0), (0, -1), "LEFT"),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("TOPPADDING", (0, 0), (-1, -1), 1),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
-                ("LINEBELOW", (0, 0), (-1, 0), 1.2, colors.black),
-                ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
-            ]
+            ("FONTSIZE", (0, 0), (-1, 0), 8),
+            ("FONTSIZE", (0, 1), (-1, -1), 7),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+            ("ALIGN", (1, 0), (-1, -1), "CENTER"),
+            ("ALIGN", (0, 0), (0, -1), "LEFT"),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 2),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+            ("LINEBELOW", (0, 0), (-1, 0), 1.2, colors.black),
+            ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
+        ]
 
         for (col_idx, row_idx), cls in cell_classes.items():
             if cls == "n.i.o":
@@ -299,22 +297,22 @@ def build_et6_axis_matrix_report(
 
     # Нижние два информационных блока.
     story.append(Spacer(1, 3 * mm))
-    footer_left_title = "<font size='9'><b>REDBOX:</b></font>"
+    footer_left_title = "<b>REDBOX:</b>"
     footer_left = (
-        "<font size='8'>Parameter<br/>"
+        "Parameter<br/>"
         "Aw:Achse 1, 2 = Achse 11<br/>"
-        "Bw:Achse 1, 2 = Achse 21</font>"
+        "Bw:Achse 1, 2 = Achse 21"
     )
     footer_center = (
-        "<font size='8'><b>SCU Konfiguration</b><br/>"
+        "<b>SCU Konfiguration</b><br/>"
         "Aw:RADDM1 = Achse 13, RADDM2 = Achse 12<br/>"
-        "Bw:RADDM1 = Achse 23, RADDM2 = Achse 22</font>"
+        "Bw:RADDM1 = Achse 23, RADDM2 = Achse 22"
     )
-    footer_right_title = "<font size='9'><b>PZB</b></font>"
+    footer_right_title = "<b>PZB</b>"
     footer_right = (
-        "<font size='8'><br/>"
+        "<br/>"
         "Aw:Achse 13<br/>"
-        "Bw:Achse 23</font>"
+        "Bw:Achse 23"
     )
 
     left_cell = Table(
@@ -337,10 +335,10 @@ def build_et6_axis_matrix_report(
                 ("GRID", (0, 0), (-1, -1), 1, colors.black),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LINEAFTER", (1, 0), (1, 0), 2, colors.black),
-                ("LEFTPADDING", (0, 0), (-1, -1), 3),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 3),
-                ("TOPPADDING", (0, 0), (-1, -1), 1),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
+                ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ("TOPPADDING", (0, 0), (-1, -1), 2),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
             ]
         )
     )
