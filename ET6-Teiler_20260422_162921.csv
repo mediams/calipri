@@ -1,0 +1,328 @@
+MeasPlan.Name;ET6-Teiler
+Name;Frei Waldemar
+Fahrzeug;ET323
+Kilometerstand;2626436
+Datum;22.04.2026
+MeasObject.Name;MeasObject.Prop.Name.0;MeasObject.Prop.Value.0;MeasPoint.Name;Dimension.Name;Dimension.Value;Dimension.Unit;Dimension.Classification
+Achse11;Achsennummer;RO10819;Spurkranz links;Sh;29,77;mm;i.o
+Achse11;Achsennummer;RO10819;Spurkranz links;Sd;31,05;mm;i.o
+Achse11;Achsennummer;RO10819;Spurkranz links;qR;11,76;mm;i.o
+Achse11;Achsennummer;RO10819;Raddurchmesser links;Dlk;902,19;mm;i.o
+Achse11;Achsennummer;RO10819;Bremsscheibe Links Innen;BH;2,02;mm;n.i.o
+Achse11;Achsennummer;RO10819;Bremsscheibe Links Innen;Bst;2,15;mm;i.o
+Achse11;Achsennummer;RO10819;Bremsscheibe Links Innen;WS;0,13;mm;n.i.o
+Achse11;Achsennummer;RO10819;Bremsscheibe Links Außen;BH;0,58;mm;i.o
+Achse11;Achsennummer;RO10819;Bremsscheibe Links Außen;Bst;2,18;mm;i.o
+Achse11;Achsennummer;RO10819;Bremsscheibe Links Außen;WS;1,60;mm;Achtung
+Achse11;Achsennummer;RO10819;Spurkranz rechts;Sh;30,00;mm;i.o
+Achse11;Achsennummer;RO10819;Spurkranz rechts;Sd;31,34;mm;i.o
+Achse11;Achsennummer;RO10819;Spurkranz rechts;qR;11,89;mm;i.o
+Achse11;Achsennummer;RO10819;Raddurchmesser Rechts;Dlk;901,70;mm;i.o
+Achse11;Achsennummer;RO10819;Bremsscheibe Rechts Innen;BH;1,54;mm;Achtung
+Achse11;Achsennummer;RO10819;Bremsscheibe Rechts Innen;Bst;2,36;mm;i.o
+Achse11;Achsennummer;RO10819;Bremsscheibe Rechts Innen;WS;0,82;mm;Achtung
+Achse11;Achsennummer;RO10819;Bremsscheibe Rechts Außen;BH;1,15;mm;Achtung
+Achse11;Achsennummer;RO10819;Bremsscheibe Rechts Außen;Bst;3,03;mm;i.o
+Achse11;Achsennummer;RO10819;Bremsscheibe Rechts Außen;WS;1,88;mm;Achtung
+Achse11;Achsennummer;RO10819;Differenz Durchmesser;DDA1;0,49;mm;i.o
+Achse11;Achsennummer;RO10819;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse11;Achsennummer;RO10819;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse12;Achsennummer;RO11402;Spurkranz links;Sh;29,79;mm;i.o
+Achse12;Achsennummer;RO11402;Spurkranz links;Sd;31,06;mm;i.o
+Achse12;Achsennummer;RO11402;Spurkranz links;qR;11,72;mm;i.o
+Achse12;Achsennummer;RO11402;Raddurchmesser links;Dlk;902,01;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Links Innen;BH;0,87;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Links Innen;Bst;3,10;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Links Innen;WS;2,23;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Links Außen;BH;0,46;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Links Außen;Bst;3,23;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Links Außen;WS;2,77;mm;i.o
+Achse12;Achsennummer;RO11402;Spurkranz rechts;Sh;29,90;mm;i.o
+Achse12;Achsennummer;RO11402;Spurkranz rechts;Sd;31,23;mm;i.o
+Achse12;Achsennummer;RO11402;Spurkranz rechts;qR;11,90;mm;i.o
+Achse12;Achsennummer;RO11402;Raddurchmesser Rechts;Dlk;901,99;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Rechts Innen;BH;1,42;mm;Achtung
+Achse12;Achsennummer;RO11402;Bremsscheibe Rechts Innen;Bst;4,12;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Rechts Innen;WS;2,70;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Rechts Außen;BH;0,54;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Rechts Außen;Bst;3,91;mm;i.o
+Achse12;Achsennummer;RO11402;Bremsscheibe Rechts Außen;WS;3,37;mm;i.o
+Achse12;Achsennummer;RO11402;Differenz Durchmesser;DDA1;0,01;mm;i.o
+Achse12;Achsennummer;RO11402;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse12;Achsennummer;RO11402;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse13;Achsennummer;BV11803;Spurkranz links;Sh;33,09;mm;i.o
+Achse13;Achsennummer;BV11803;Spurkranz links;Sd;30,52;mm;i.o
+Achse13;Achsennummer;BV11803;Spurkranz links;qR;11,16;mm;i.o
+Achse13;Achsennummer;BV11803;Raddurchmesser links;Dlk;698,95;mm;Achtung
+Achse13;Achsennummer;BV11803;Bremsscheibe Links Innen;BH;1,49;mm;Achtung
+Achse13;Achsennummer;BV11803;Bremsscheibe Links Innen;Bst;3,26;mm;i.o
+Achse13;Achsennummer;BV11803;Bremsscheibe Links Innen;WS;1,77;mm;Achtung
+Achse13;Achsennummer;BV11803;Bremsscheibe Links Außen;BH;1,88;mm;Achtung
+Achse13;Achsennummer;BV11803;Bremsscheibe Links Außen;Bst;3,75;mm;i.o
+Achse13;Achsennummer;BV11803;Bremsscheibe Links Außen;WS;1,88;mm;Achtung
+Achse13;Achsennummer;BV11803;Spurkranz rechts;Sh;33,16;mm;i.o
+Achse13;Achsennummer;BV11803;Spurkranz rechts;Sd;30,52;mm;i.o
+Achse13;Achsennummer;BV11803;Spurkranz rechts;qR;11,29;mm;i.o
+Achse13;Achsennummer;BV11803;Raddurchmesser Rechts;Dlk;699,03;mm;Achtung
+Achse13;Achsennummer;BV11803;Bremsscheibe Rechts Innen;BH;1,55;mm;Achtung
+Achse13;Achsennummer;BV11803;Bremsscheibe Rechts Innen;Bst;3,32;mm;i.o
+Achse13;Achsennummer;BV11803;Bremsscheibe Rechts Innen;WS;1,77;mm;Achtung
+Achse13;Achsennummer;BV11803;Bremsscheibe Rechts Außen;BH;1,51;mm;Achtung
+Achse13;Achsennummer;BV11803;Bremsscheibe Rechts Außen;Bst;4,02;mm;i.o
+Achse13;Achsennummer;BV11803;Bremsscheibe Rechts Außen;WS;2,51;mm;i.o
+Achse13;Achsennummer;BV11803;Differenz Durchmesser;DDA1;0,08;mm;i.o
+Achse13;Achsennummer;BV11803;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse13;Achsennummer;BV11803;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse14;Achsennummer;BV11575;Spurkranz links;Sh;33,15;mm;i.o
+Achse14;Achsennummer;BV11575;Spurkranz links;Sd;30,58;mm;i.o
+Achse14;Achsennummer;BV11575;Spurkranz links;qR;11,17;mm;i.o
+Achse14;Achsennummer;BV11575;Raddurchmesser links;Dlk;702,14;mm;i.o
+Achse14;Achsennummer;BV11575;Bremsscheibe Links Innen;BH;1,21;mm;Achtung
+Achse14;Achsennummer;BV11575;Bremsscheibe Links Innen;Bst;2,49;mm;i.o
+Achse14;Achsennummer;BV11575;Bremsscheibe Links Innen;WS;1,28;mm;Achtung
+Achse14;Achsennummer;BV11575;Bremsscheibe Links Außen;BH;1,36;mm;Achtung
+Achse14;Achsennummer;BV11575;Bremsscheibe Links Außen;Bst;2,42;mm;i.o
+Achse14;Achsennummer;BV11575;Bremsscheibe Links Außen;WS;1,06;mm;Achtung
+Achse14;Achsennummer;BV11575;Spurkranz rechts;Sh;32,83;mm;i.o
+Achse14;Achsennummer;BV11575;Spurkranz rechts;Sd;30,27;mm;i.o
+Achse14;Achsennummer;BV11575;Spurkranz rechts;qR;11,16;mm;i.o
+Achse14;Achsennummer;BV11575;Raddurchmesser Rechts;Dlk;702,74;mm;i.o
+Achse14;Achsennummer;BV11575;Bremsscheibe Rechts Innen;BH;1,20;mm;Achtung
+Achse14;Achsennummer;BV11575;Bremsscheibe Rechts Innen;Bst;2,69;mm;i.o
+Achse14;Achsennummer;BV11575;Bremsscheibe Rechts Innen;WS;1,49;mm;Achtung
+Achse14;Achsennummer;BV11575;Bremsscheibe Rechts Außen;BH;1,24;mm;Achtung
+Achse14;Achsennummer;BV11575;Bremsscheibe Rechts Außen;Bst;2,37;mm;i.o
+Achse14;Achsennummer;BV11575;Bremsscheibe Rechts Außen;WS;1,13;mm;Achtung
+Achse14;Achsennummer;BV11575;Differenz Durchmesser;DDA1;0,60;mm;i.o
+Achse14;Achsennummer;BV11575;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse14;Achsennummer;BV11575;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse42;Achsennummer;R111;Spurkranz links;Sh;32,83;mm;i.o
+Achse42;Achsennummer;R111;Spurkranz links;Sd;30,40;mm;i.o
+Achse42;Achsennummer;R111;Spurkranz links;qR;11,05;mm;i.o
+Achse42;Achsennummer;R111;Raddurchmesser links;Dlk;738,82;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Links Innen;BH;1,12;mm;Achtung
+Achse42;Achsennummer;R111;Bremsscheibe Links Innen;Bst;5,09;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Links Innen;WS;3,97;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Links Außen;BH;1,02;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Links Außen;Bst;4,95;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Links Außen;WS;3,93;mm;i.o
+Achse42;Achsennummer;R111;Spurkranz rechts;Sh;32,92;mm;i.o
+Achse42;Achsennummer;R111;Spurkranz rechts;Sd;30,38;mm;i.o
+Achse42;Achsennummer;R111;Spurkranz rechts;qR;11,14;mm;i.o
+Achse42;Achsennummer;R111;Raddurchmesser Rechts;Dlk;739,09;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Rechts Innen;BH;0,80;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Rechts Innen;Bst;5,07;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Rechts Innen;WS;4,27;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Rechts Außen;BH;0,73;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Rechts Außen;Bst;5,60;mm;i.o
+Achse42;Achsennummer;R111;Bremsscheibe Rechts Außen;WS;4,66;mm;i.o
+Achse42;Achsennummer;R111;Differenz Durchmesser;DDA1;0,27;mm;i.o
+Achse42;Achsennummer;R111;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse42;Achsennummer;R111;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse41;Achsennummer;BV11738;Spurkranz links;Sh;32,81;mm;i.o
+Achse41;Achsennummer;BV11738;Spurkranz links;Sd;30,33;mm;i.o
+Achse41;Achsennummer;BV11738;Spurkranz links;qR;10,99;mm;i.o
+Achse41;Achsennummer;BV11738;Raddurchmesser links;Dlk;738,84;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Links Innen;BH;0,69;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Links Innen;Bst;5,20;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Links Innen;WS;4,52;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Links Außen;BH;0,99;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Links Außen;Bst;5,24;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Links Außen;WS;4,25;mm;i.o
+Achse41;Achsennummer;BV11738;Spurkranz rechts;Sh;32,82;mm;i.o
+Achse41;Achsennummer;BV11738;Spurkranz rechts;Sd;30,30;mm;i.o
+Achse41;Achsennummer;BV11738;Spurkranz rechts;qR;11,13;mm;i.o
+Achse41;Achsennummer;BV11738;Raddurchmesser Rechts;Dlk;738,72;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Rechts Innen;BH;0,96;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Rechts Innen;Bst;5,04;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Rechts Innen;WS;4,08;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Rechts Außen;BH;0,80;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Rechts Außen;Bst;5,15;mm;i.o
+Achse41;Achsennummer;BV11738;Bremsscheibe Rechts Außen;WS;4,35;mm;i.o
+Achse41;Achsennummer;BV11738;Differenz Durchmesser;DDA1;0,12;mm;i.o
+Achse41;Achsennummer;BV11738;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse41;Achsennummer;BV11738;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse52;Achsennummer;BV20250;Spurkranz links;Sh;32,82;mm;i.o
+Achse52;Achsennummer;BV20250;Spurkranz links;Sd;30,29;mm;i.o
+Achse52;Achsennummer;BV20250;Spurkranz links;qR;11,07;mm;i.o
+Achse52;Achsennummer;BV20250;Raddurchmesser links;Dlk;737,86;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Links Innen;BH;0,61;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Links Innen;Bst;5,07;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Links Innen;WS;4,46;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Links Außen;BH;0,36;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Links Außen;Bst;5,16;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Links Außen;WS;4,73;mm;i.o
+Achse52;Achsennummer;BV20250;Spurkranz rechts;Sh;32,95;mm;i.o
+Achse52;Achsennummer;BV20250;Spurkranz rechts;Sd;30,33;mm;i.o
+Achse52;Achsennummer;BV20250;Spurkranz rechts;qR;11,21;mm;i.o
+Achse52;Achsennummer;BV20250;Raddurchmesser Rechts;Dlk;737,75;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Rechts Innen;BH;0,45;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Rechts Innen;Bst;5,01;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Rechts Innen;WS;4,53;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Rechts Außen;BH;0,60;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Rechts Außen;Bst;5,12;mm;i.o
+Achse52;Achsennummer;BV20250;Bremsscheibe Rechts Außen;WS;4,52;mm;i.o
+Achse52;Achsennummer;BV20250;Differenz Durchmesser;DDA1;0,11;mm;i.o
+Achse52;Achsennummer;BV20250;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse52;Achsennummer;BV20250;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse51;Achsennummer;BV11868;Spurkranz links;Sh;32,88;mm;i.o
+Achse51;Achsennummer;BV11868;Spurkranz links;Sd;30,41;mm;i.o
+Achse51;Achsennummer;BV11868;Spurkranz links;qR;11,01;mm;i.o
+Achse51;Achsennummer;BV11868;Raddurchmesser links;Dlk;737,75;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Links Innen;BH;0,68;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Links Innen;Bst;5,01;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Links Innen;WS;4,32;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Links Außen;BH;0,60;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Links Außen;Bst;5,12;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Links Außen;WS;4,51;mm;i.o
+Achse51;Achsennummer;BV11868;Spurkranz rechts;Sh;32,88;mm;i.o
+Achse51;Achsennummer;BV11868;Spurkranz rechts;Sd;30,31;mm;i.o
+Achse51;Achsennummer;BV11868;Spurkranz rechts;qR;11,18;mm;i.o
+Achse51;Achsennummer;BV11868;Raddurchmesser Rechts;Dlk;737,65;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Rechts Innen;BH;0,72;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Rechts Innen;Bst;5,03;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Rechts Innen;WS;4,30;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Rechts Außen;BH;0,44;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Rechts Außen;Bst;5,21;mm;i.o
+Achse51;Achsennummer;BV11868;Bremsscheibe Rechts Außen;WS;4,77;mm;i.o
+Achse51;Achsennummer;BV11868;Differenz Durchmesser;DDA1;0,10;mm;i.o
+Achse51;Achsennummer;BV11868;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse51;Achsennummer;BV11868;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse62;Achsennummer;BV10909;Spurkranz links;Sh;33,00;mm;i.o
+Achse62;Achsennummer;BV10909;Spurkranz links;Sd;30,46;mm;i.o
+Achse62;Achsennummer;BV10909;Spurkranz links;qR;11,11;mm;i.o
+Achse62;Achsennummer;BV10909;Raddurchmesser links;Dlk;706,72;mm;i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Links Innen;BH;1,40;mm;Achtung
+Achse62;Achsennummer;BV10909;Bremsscheibe Links Innen;Bst;5,05;mm;i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Links Innen;WS;3,66;mm;i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Links Außen;BH;1,07;mm;i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Links Außen;Bst;5,29;mm;i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Links Außen;WS;4,22;mm;i.o
+Achse62;Achsennummer;BV10909;Spurkranz rechts;Sh;32,98;mm;i.o
+Achse62;Achsennummer;BV10909;Spurkranz rechts;Sd;30,44;mm;i.o
+Achse62;Achsennummer;BV10909;Spurkranz rechts;qR;11,24;mm;i.o
+Achse62;Achsennummer;BV10909;Raddurchmesser Rechts;Dlk;706,51;mm;i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Rechts Innen;BH;1,52;mm;Achtung
+Achse62;Achsennummer;BV10909;Bremsscheibe Rechts Innen;Bst;4,95;mm;i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Rechts Innen;WS;3,43;mm;i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Rechts Außen;BH;2,05;mm;n.i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Rechts Außen;Bst;4,85;mm;i.o
+Achse62;Achsennummer;BV10909;Bremsscheibe Rechts Außen;WS;2,80;mm;i.o
+Achse62;Achsennummer;BV10909;Differenz Durchmesser;DDA1;0,20;mm;i.o
+Achse62;Achsennummer;BV10909;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse62;Achsennummer;BV10909;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse61;Achsennummer;BV11653;Spurkranz links;Sh;32,95;mm;i.o
+Achse61;Achsennummer;BV11653;Spurkranz links;Sd;30,42;mm;i.o
+Achse61;Achsennummer;BV11653;Spurkranz links;qR;11,07;mm;i.o
+Achse61;Achsennummer;BV11653;Raddurchmesser links;Dlk;706,14;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Links Innen;BH;1,41;mm;Achtung
+Achse61;Achsennummer;BV11653;Bremsscheibe Links Innen;Bst;4,83;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Links Innen;WS;3,42;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Links Außen;BH;0,49;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Links Außen;Bst;2,57;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Links Außen;WS;2,08;mm;i.o
+Achse61;Achsennummer;BV11653;Spurkranz rechts;Sh;33,11;mm;i.o
+Achse61;Achsennummer;BV11653;Spurkranz rechts;Sd;30,56;mm;i.o
+Achse61;Achsennummer;BV11653;Spurkranz rechts;qR;11,24;mm;i.o
+Achse61;Achsennummer;BV11653;Raddurchmesser Rechts;Dlk;706,52;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Rechts Innen;BH;1,84;mm;Achtung
+Achse61;Achsennummer;BV11653;Bremsscheibe Rechts Innen;Bst;5,03;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Rechts Innen;WS;3,19;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Rechts Außen;BH;0,46;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Rechts Außen;Bst;3,03;mm;i.o
+Achse61;Achsennummer;BV11653;Bremsscheibe Rechts Außen;WS;2,57;mm;i.o
+Achse61;Achsennummer;BV11653;Differenz Durchmesser;DDA1;0,39;mm;i.o
+Achse61;Achsennummer;BV11653;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse61;Achsennummer;BV11653;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse24;Achsennummer;BV10847;Spurkranz links;Sh;32,92;mm;i.o
+Achse24;Achsennummer;BV10847;Spurkranz links;Sd;30,49;mm;i.o
+Achse24;Achsennummer;BV10847;Spurkranz links;qR;11,24;mm;i.o
+Achse24;Achsennummer;BV10847;Raddurchmesser links;Dlk;757,78;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Links Innen;BH;1,21;mm;Achtung
+Achse24;Achsennummer;BV10847;Bremsscheibe Links Innen;Bst;3,48;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Links Innen;WS;2,27;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Links Außen;BH;0,95;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Links Außen;Bst;3,11;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Links Außen;WS;2,16;mm;i.o
+Achse24;Achsennummer;BV10847;Spurkranz rechts;Sh;33,07;mm;i.o
+Achse24;Achsennummer;BV10847;Spurkranz rechts;Sd;30,59;mm;i.o
+Achse24;Achsennummer;BV10847;Spurkranz rechts;qR;11,30;mm;i.o
+Achse24;Achsennummer;BV10847;Raddurchmesser Rechts;Dlk;758,08;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Rechts Innen;BH;1,14;mm;Achtung
+Achse24;Achsennummer;BV10847;Bremsscheibe Rechts Innen;Bst;3,38;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Rechts Innen;WS;2,24;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Rechts Außen;BH;1,08;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Rechts Außen;Bst;3,33;mm;i.o
+Achse24;Achsennummer;BV10847;Bremsscheibe Rechts Außen;WS;2,25;mm;i.o
+Achse24;Achsennummer;BV10847;Differenz Durchmesser;DDA1;0,30;mm;i.o
+Achse24;Achsennummer;BV10847;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse24;Achsennummer;BV10847;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse23;Achsennummer;BV11569;Spurkranz links;Sh;33,04;mm;i.o
+Achse23;Achsennummer;BV11569;Spurkranz links;Sd;30,46;mm;i.o
+Achse23;Achsennummer;BV11569;Spurkranz links;qR;11,10;mm;i.o
+Achse23;Achsennummer;BV11569;Raddurchmesser links;Dlk;757,74;mm;i.o
+Achse23;Achsennummer;BV11569;Bremsscheibe Links Innen;BH;1,26;mm;Achtung
+Achse23;Achsennummer;BV11569;Bremsscheibe Links Innen;Bst;5,05;mm;i.o
+Achse23;Achsennummer;BV11569;Bremsscheibe Links Innen;WS;3,79;mm;i.o
+Achse23;Achsennummer;BV11569;Bremsscheibe Links Außen;BH;1,41;mm;Achtung
+Achse23;Achsennummer;BV11569;Bremsscheibe Links Außen;Bst;4,97;mm;i.o
+Achse23;Achsennummer;BV11569;Bremsscheibe Links Außen;WS;3,56;mm;i.o
+Achse23;Achsennummer;BV11569;Spurkranz rechts;Sh;32,97;mm;i.o
+Achse23;Achsennummer;BV11569;Spurkranz rechts;Sd;30,51;mm;i.o
+Achse23;Achsennummer;BV11569;Spurkranz rechts;qR;11,20;mm;i.o
+Achse23;Achsennummer;BV11569;Raddurchmesser Rechts;Dlk;757,70;mm;i.o
+Achse23;Achsennummer;BV11569;Bremsscheibe Rechts Innen;BH;0,85;mm;i.o
+Achse23;Achsennummer;BV11569;Bremsscheibe Rechts Innen;Bst;5,04;mm;i.o
+Achse23;Achsennummer;BV11569;Bremsscheibe Rechts Innen;WS;4,19;mm;i.o
+Achse23;Achsennummer;BV11569;Bremsscheibe Rechts Außen;BH;1,16;mm;Achtung
+Achse23;Achsennummer;BV11569;Bremsscheibe Rechts Außen;Bst;5,06;mm;i.o
+Achse23;Achsennummer;BV11569;Bremsscheibe Rechts Außen;WS;3,90;mm;i.o
+Achse23;Achsennummer;BV11569;Differenz Durchmesser;DDA1;0,04;mm;i.o
+Achse23;Achsennummer;BV11569;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse23;Achsennummer;BV11569;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse22;Achsennummer;BV11536;Spurkranz links;Sh;29,52;mm;i.o
+Achse22;Achsennummer;BV11536;Spurkranz links;Sd;30,90;mm;i.o
+Achse22;Achsennummer;BV11536;Spurkranz links;qR;11,51;mm;i.o
+Achse22;Achsennummer;BV11536;Raddurchmesser links;Dlk;903,45;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Links Innen;BH;0,68;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Links Innen;Bst;4,99;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Links Innen;WS;4,31;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Links Außen;BH;0,57;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Links Außen;Bst;5,04;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Links Außen;WS;4,47;mm;i.o
+Achse22;Achsennummer;BV11536;Spurkranz rechts;Sh;29,84;mm;i.o
+Achse22;Achsennummer;BV11536;Spurkranz rechts;Sd;31,26;mm;i.o
+Achse22;Achsennummer;BV11536;Spurkranz rechts;qR;11,79;mm;i.o
+Achse22;Achsennummer;BV11536;Raddurchmesser Rechts;Dlk;903,23;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Rechts Innen;BH;0,75;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Rechts Innen;Bst;5,02;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Rechts Innen;WS;4,27;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Rechts Außen;BH;0,51;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Rechts Außen;Bst;5,00;mm;i.o
+Achse22;Achsennummer;BV11536;Bremsscheibe Rechts Außen;WS;4,49;mm;i.o
+Achse22;Achsennummer;BV11536;Differenz Durchmesser;DDA1;0,22;mm;i.o
+Achse22;Achsennummer;BV11536;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse22;Achsennummer;BV11536;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
+Achse21;Achsennummer;RO11808;Spurkranz links;Sh;29,69;mm;i.o
+Achse21;Achsennummer;RO11808;Spurkranz links;Sd;31,04;mm;i.o
+Achse21;Achsennummer;RO11808;Spurkranz links;qR;11,62;mm;i.o
+Achse21;Achsennummer;RO11808;Raddurchmesser links;Dlk;903,06;mm;i.o
+Achse21;Achsennummer;RO11808;Bremsscheibe Links Innen;BH;1,57;mm;Achtung
+Achse21;Achsennummer;RO11808;Bremsscheibe Links Innen;Bst;3,11;mm;i.o
+Achse21;Achsennummer;RO11808;Bremsscheibe Links Innen;WS;1,54;mm;Achtung
+Achse21;Achsennummer;RO11808;Bremsscheibe Links Außen;BH;1,11;mm;Achtung
+Achse21;Achsennummer;RO11808;Bremsscheibe Links Außen;Bst;3,09;mm;i.o
+Achse21;Achsennummer;RO11808;Bremsscheibe Links Außen;WS;1,99;mm;Achtung
+Achse21;Achsennummer;RO11808;Spurkranz rechts;Sh;29,96;mm;i.o
+Achse21;Achsennummer;RO11808;Spurkranz rechts;Sd;31,37;mm;i.o
+Achse21;Achsennummer;RO11808;Spurkranz rechts;qR;11,88;mm;i.o
+Achse21;Achsennummer;RO11808;Raddurchmesser Rechts;Dlk;903,09;mm;i.o
+Achse21;Achsennummer;RO11808;Bremsscheibe Rechts Innen;BH;1,71;mm;Achtung
+Achse21;Achsennummer;RO11808;Bremsscheibe Rechts Innen;Bst;3,23;mm;i.o
+Achse21;Achsennummer;RO11808;Bremsscheibe Rechts Innen;WS;1,52;mm;Achtung
+Achse21;Achsennummer;RO11808;Bremsscheibe Rechts Außen;BH;1,09;mm;i.o
+Achse21;Achsennummer;RO11808;Bremsscheibe Rechts Außen;Bst;3,69;mm;i.o
+Achse21;Achsennummer;RO11808;Bremsscheibe Rechts Außen;WS;2,61;mm;i.o
+Achse21;Achsennummer;RO11808;Differenz Durchmesser;DDA1;0,03;mm;i.o
+Achse21;Achsennummer;RO11808;AR-Radinnenabstand;AR;unmeasured;mm;UNCLASSIFIED
+Achse21;Achsennummer;RO11808;SR-Spurmaß;SR;unmeasured;mm;UNCLASSIFIED
