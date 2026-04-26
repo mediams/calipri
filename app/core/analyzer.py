@@ -93,28 +93,47 @@ def extract_et6_metadata(data_path: Path) -> dict[str, str]:
 
 def extract_axis_reference_map(df: pd.DataFrame) -> dict[str, str]:
     """
-    Карта ось -> идентификатор данных (например RO10819), чтобы
-    автоматически подставлять значения в нижние информационные блоки.
+    Карта ось -> значения Raddurchmesser Dlk для L/R, например:
+    11 -> "(902,19, 901,70)".
     """
     working = df.copy()
     working.columns = [str(c).strip() for c in working.columns]
     cols = list(working.columns)
 
     axis_col = _pick_column(cols, ["measobject.name", "achse", "axis"])
-    ref_col = _pick_column(cols, ["measobject.prop.value.0", "prop.value", "value.0"])
-    if not (axis_col and ref_col):
+    point_col = _pick_column(cols, ["measpoint.name", "measpoint", "point"])
+    dim_col = _pick_column(cols, ["dimension.name", "dim"])
+    value_col = _pick_column(cols, ["dimension.value", "wert", "value"])
+    if not (axis_col and point_col and dim_col and value_col):
         return {}
 
-    out: dict[str, str] = {}
+    raw: dict[str, dict[str, str]] = {}
     for _, row in working.iterrows():
         axis_raw = str(row[axis_col])
         axis_match = re.search(r"(\d+)", axis_raw)
         if not axis_match:
             continue
         axis = axis_match.group(1)
-        ref = str(row[ref_col]).strip()
-        if ref and ref.lower() != "nan" and axis not in out:
-            out[axis] = ref
+        point = str(row[point_col]).strip().lower()
+        dim = str(row[dim_col]).strip()
+        value = str(row[value_col]).strip()
+        if not value or value.lower() == "nan":
+            continue
+        if dim != "Dlk" or "raddurchmesser" not in point:
+            continue
+
+        if axis not in raw:
+            raw[axis] = {"L": "", "R": ""}
+        if "links" in point:
+            raw[axis]["L"] = value
+        elif "rechts" in point:
+            raw[axis]["R"] = value
+
+    out: dict[str, str] = {}
+    for axis, side_values in raw.items():
+        left = side_values.get("L", "---") or "---"
+        right = side_values.get("R", "---") or "---"
+        out[axis] = f"({left}, {right})"
     return out
 
 

@@ -377,6 +377,8 @@ def build_et6_axis_matrix_report(
     story.append(footer_table)
 
     story.append(Spacer(1, 2 * mm))
+    story.append(Paragraph("<b>Flirt 3 CHI (ENR)</b>", styles["Heading3"]))
+    story.append(Spacer(1, 1 * mm))
     flirt_rows = [
         ["Mittlerer Raddurchmesser² im DG", "Gesamte Beilagendicke\nKompensation Radverschleiss je DG:"],
         ["Laufdrehgestell\n760 mm - 725 mm\n(725+5/0 – 690) mm", "0 mm\n15 mm"],
