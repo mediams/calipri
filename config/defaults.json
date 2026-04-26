@@ -1,0 +1,29 @@
+{
+  "license": {
+    "start_date": "2026-03-01",
+    "valid_days": 90
+  },
+  "pdf": {
+    "logo": ""
+  },
+  "thresholds": {
+    "TEMP": {
+      "display_name": "Температура",
+      "min": 18.0,
+      "max": 27.0,
+      "unit": "°C"
+    },
+    "PRESSURE": {
+      "display_name": "Давление",
+      "min": 1.8,
+      "max": 2.2,
+      "unit": "bar"
+    },
+    "VOLTAGE": {
+      "display_name": "Напряжение",
+      "min": 210,
+      "max": 230,
+      "unit": "V"
+    }
+  }
+}
