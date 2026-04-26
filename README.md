@@ -38,6 +38,15 @@ python -m venv .venv
 pip install -r requirements.txt
 python -m app.main
 ```
+```bash
+rmdir /s /q .venv
+py -3.12 -m venv .venv
+.venv\Scripts\activate
+python --version
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+python -m app.main
+```
 
 ## Сборка `.exe` на Windows
 

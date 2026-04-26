@@ -196,11 +196,11 @@ def build_et6_axis_matrix_report(
     ]
 
     left_header_table = Table(left_header_rows, colWidths=[150, 120])
-    right_header_table = Table(right_header_rows, colWidths=[145, 160])
+    right_header_table = Table(right_header_rows, colWidths=[150, 120])
 
     base_header_style = TableStyle(
         [
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+            ("GRID", (0, 0), (-1, -1), 1, colors.grey),
             ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
             ("FONTSIZE", (0, 0), (-1, -1), 9),
             ("LEFTPADDING", (0, 0), (-1, -1), 4),
@@ -212,12 +212,12 @@ def build_et6_axis_matrix_report(
 
     brand_text = (
         "<para align='right'><b>(YKA) CALIPRI</b><br/>"
-        f"<font size='10'>{metadata.get('Datum', '')}</font></para>"
+        f"<font size='8'>{metadata.get('Datum', '')}</font></para>"
     )
     # 3мм зазор между левым и правым блоком метаданных.
     top_header = Table(
         [[left_header_table, "", right_header_table, Paragraph(brand_text, styles["Title"])]],
-        colWidths=[270, 3 * mm, 300, 217],
+        colWidths=[270, 5 * mm, 300, 217],
     )
     top_header.setStyle(
         TableStyle(
@@ -225,7 +225,7 @@ def build_et6_axis_matrix_report(
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 0),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 0),
-                ("LINEBEFORE", (2, 0), (2, 0), 0, colors.white),
+                # ("LINEBEFORE", (2, 0), (2, 0), 0, colors.white),
             ]
         )
     )
@@ -307,20 +307,19 @@ def build_et6_axis_matrix_report(
     story.append(Spacer(1, 3 * mm))
     footer_left_title = "<b>REDBOX:</b>"
     footer_left = (
-        "Parameter<br/>"
-        f"Aw:Achse 1, 2 = Achse 11 ({axis_ref('11')})<br/>"
-        f"Bw:Achse 1, 2 = Achse 21 ({axis_ref('21')})"
+        "<b>Parameter</b><br/>"
+        f"Aw:Achse 1, 2 = Achse 11 {axis_ref('11')}<br/>"
+        f"Bw:Achse 1, 2 = Achse 21 {axis_ref('21')}"
     )
     footer_center = (
         "<b>SCU Konfiguration</b><br/>"
-        f"Aw:RADDM1 = Achse 13 ({axis_ref('13')}), RADDM2 = Achse 12 ({axis_ref('12')})<br/>"
-        f"Bw:RADDM1 = Achse 23 ({axis_ref('23')}), RADDM2 = Achse 22 ({axis_ref('22')})"
+        f"Aw:<br/>   RADDM1 = Achse 13 {axis_ref('13')}, <br/>   RADDM2 = Achse 12 {axis_ref('12')}<br/>"
+        f"Bw:<br/>   RADDM1 = Achse 23 {axis_ref('23')}, <br/>   RADDM2 = Achse 22 {axis_ref('22')}"
     )
     footer_right_title = "<b>PZB</b>"
     footer_right = (
-        "<br/>"
-        f"Aw:Achse 13 ({axis_ref('13')})<br/>"
-        f"Bw:Achse 23 ({axis_ref('23')})"
+        f"Aw:Achse 13 {axis_ref('13')}<br/>"
+        f"Bw:Achse 23 {axis_ref('23')}"
     )
 
     redbox_table = Table(

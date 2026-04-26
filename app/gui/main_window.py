@@ -101,7 +101,7 @@ class MainWindow(QMainWindow):
                     QMessageBox.information(
                         self,
                         "Fertig",
-                        f"PDF (A4, Fokus 11/12/13/14/42/41/52) gespeichert:\n{output_path}",
+                        f"PDF gespeichert:\n{output_path}",
                     )
                     return
 
