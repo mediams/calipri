@@ -166,6 +166,7 @@ def build_et6_axis_matrix_report(
     matrix_df,
     matrix_df_secondary=None,
     metadata: dict[str, str] | None = None,
+    axis_reference_map: dict[str, str] | None = None,
 ) -> None:
     """
     Lesbare Matrix auf einer A4-Seite (Querformat):
@@ -213,9 +214,10 @@ def build_et6_axis_matrix_report(
         "<para align='right'><b>(YKA) CALIPRI</b><br/>"
         f"<font size='10'>{metadata.get('Datum', '')}</font></para>"
     )
+    # 3мм зазор между левым и правым блоком метаданных.
     top_header = Table(
-        [[left_header_table, right_header_table, Paragraph(brand_text, styles["Title"])]],
-        colWidths=[270, 305, 215],
+        [[left_header_table, "", right_header_table, Paragraph(brand_text, styles["Title"])]],
+        colWidths=[270, 3 * mm, 300, 217],
     )
     top_header.setStyle(
         TableStyle(
@@ -223,6 +225,7 @@ def build_et6_axis_matrix_report(
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 0),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                ("LINEBEFORE", (2, 0), (2, 0), 0, colors.white),
             ]
         )
     )
@@ -292,56 +295,108 @@ def build_et6_axis_matrix_report(
 
     story.append(build_matrix_table(matrix_df))
     if matrix_df_secondary is not None:
-        story.append(Spacer(1, 0.5 * mm))  # еще плотнее между блоками осей
+        # 4мм расстояние между двумя таблицами осей.
+        story.append(Spacer(1, 4 * mm))
         story.append(build_matrix_table(matrix_df_secondary))
 
-    # Нижние два информационных блока.
+    axis_reference_map = axis_reference_map or {}
+    def axis_ref(axis: str) -> str:
+        return axis_reference_map.get(axis, "---")
+
+    # Нижние информационные блоки.
     story.append(Spacer(1, 3 * mm))
     footer_left_title = "<b>REDBOX:</b>"
     footer_left = (
         "Parameter<br/>"
-        "Aw:Achse 1, 2 = Achse 11<br/>"
-        "Bw:Achse 1, 2 = Achse 21"
+        f"Aw:Achse 1, 2 = Achse 11 ({axis_ref('11')})<br/>"
+        f"Bw:Achse 1, 2 = Achse 21 ({axis_ref('21')})"
     )
     footer_center = (
         "<b>SCU Konfiguration</b><br/>"
-        "Aw:RADDM1 = Achse 13, RADDM2 = Achse 12<br/>"
-        "Bw:RADDM1 = Achse 23, RADDM2 = Achse 22"
+        f"Aw:RADDM1 = Achse 13 ({axis_ref('13')}), RADDM2 = Achse 12 ({axis_ref('12')})<br/>"
+        f"Bw:RADDM1 = Achse 23 ({axis_ref('23')}), RADDM2 = Achse 22 ({axis_ref('22')})"
     )
     footer_right_title = "<b>PZB</b>"
     footer_right = (
         "<br/>"
-        "Aw:Achse 13<br/>"
-        "Bw:Achse 23"
+        f"Aw:Achse 13 ({axis_ref('13')})<br/>"
+        f"Bw:Achse 23 ({axis_ref('23')})"
     )
 
-    left_cell = Table(
-        [[Paragraph(footer_left_title, styles["Heading3"])], [Paragraph(footer_left, styles["Normal"])]],
-        colWidths=[210],
+    redbox_table = Table(
+        [
+            [Paragraph(footer_left_title, styles["Heading3"]), ""],
+            [Paragraph(footer_left, styles["Normal"]), Paragraph(footer_center, styles["Normal"])],
+        ],
+        colWidths=[255, 285],
     )
-    center_cell = Table(
-        [[Paragraph(footer_center, styles["Normal"])]],
-        colWidths=[330],
-    )
-    right_cell = Table(
-        [[Paragraph(footer_right_title, styles["Heading3"])], [Paragraph(footer_right, styles["Normal"])]],
-        colWidths=[240],
-    )
-
-    footer_table = Table([[left_cell, center_cell, right_cell]], colWidths=[210, 330, 240])
-    footer_table.setStyle(
+    redbox_table.setStyle(
         TableStyle(
             [
+                ("SPAN", (0, 0), (1, 0)),
                 ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("LINEAFTER", (0, 1), (0, 1), 0.6, colors.grey),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("LINEAFTER", (1, 0), (1, 0), 2, colors.black),
-                ("LEFTPADDING", (0, 0), (-1, -1), 6),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
                 ("TOPPADDING", (0, 0), (-1, -1), 2),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
             ]
         )
     )
+
+    right_cell = Table(
+        [[Paragraph(footer_right_title, styles["Heading3"])], [Paragraph(footer_right, styles["Normal"])]],
+        colWidths=[250],
+    )
+    right_cell.setStyle(
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, -1), 2),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+            ]
+        )
+    )
+
+    footer_table = Table([[redbox_table, right_cell]], colWidths=[540, 250])
+    footer_table.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+            ]
+        )
+    )
     story.append(footer_table)
+
+    story.append(Spacer(1, 2 * mm))
+    flirt_rows = [
+        ["Mittlerer Raddurchmesser² im DG", "Gesamte Beilagendicke\nKompensation Radverschleiss je DG:"],
+        ["Laufdrehgestell\n760 mm - 725 mm\n(725+5/0 – 690) mm", "0 mm\n15 mm"],
+        ["Motordrehgestell\n920 mm - 885 mm\n(885+5/0 – 850) mm", "0 mm\n15 mm"],
+    ]
+    flirt_table = Table(flirt_rows, colWidths=[420, 370])
+    flirt_table.setStyle(
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("FONTSIZE", (0, 0), (-1, -1), 8),
+                ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, -1), 2),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+            ]
+        )
+    )
+    story.append(flirt_table)
 
     doc.build(story)

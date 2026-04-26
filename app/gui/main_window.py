@@ -18,6 +18,7 @@ from app.core.analyzer import (
     analyze,
     build_et6_focus_matrix,
     build_et6_matrix,
+    extract_axis_reference_map,
     extract_et6_metadata,
     load_flexible_csv,
     load_measurements,
@@ -95,6 +96,7 @@ class MainWindow(QMainWindow):
                         matrix_df=matrix_df,
                         matrix_df_secondary=matrix_df_secondary,
                         metadata=extract_et6_metadata(self.input_path),
+                        axis_reference_map=extract_axis_reference_map(csv_df),
                     )
                     QMessageBox.information(
                         self,

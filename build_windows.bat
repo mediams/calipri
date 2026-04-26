@@ -16,6 +16,16 @@ if errorlevel 1 (
   echo Please install Python 3.10 x64 and try again.
   exit /b 1
 )
+for /f "tokens=2 delims= " %%v in ('python --version') do set PYVER=%%v
+for /f "tokens=1,2 delims=." %%a in ("%PYVER%") do (
+  set PYMAJOR=%%a
+  set PYMINOR=%%b
+)
+if not "%PYMAJOR%.%PYMINOR%"=="3.10" (
+  echo ERROR: Detected Python %PYVER%.
+  echo This build must be done with Python 3.10.x for stable numpy/pandas packaging.
+  exit /b 1
+)
 
 echo [2/7] Creating virtual environment...
 if not exist ".venv" (
@@ -55,7 +65,13 @@ if errorlevel 1 (
 )
 
 echo [7/7] Building executable (one-folder mode)...
-pyinstaller --noconfirm --clean --windowed --name YKA_Calipri_to_PDF app\main.py
+pyinstaller --noconfirm --clean --windowed --name YKA_Calipri_to_PDF ^
+  --distpath dist ^
+  --workpath build_tmp ^
+  --specpath build_spec ^
+  --collect-all numpy ^
+  --collect-all pandas ^
+  app\main.py
 if errorlevel 1 (
   echo ERROR: Build failed.
   exit /b 1
@@ -70,6 +86,8 @@ if exist "dist\YKA_Calipri_to_PDF\YKA_Calipri_to_PDF.exe" (
 
 echo.
 echo IMPORTANT:
+echo - RUN the app ONLY from "dist\YKA_Calipri_to_PDF\YKA_Calipri_to_PDF.exe"
+echo - DO NOT run executable from "build" or "build_tmp" folders.
 echo - Copy the whole folder "dist\YKA_Calipri_to_PDF" to target server.
 echo - If run issues occur on server, install VC++ Redistributable 2015-2022 x64.
 

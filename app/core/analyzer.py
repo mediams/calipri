@@ -91,6 +91,33 @@ def extract_et6_metadata(data_path: Path) -> dict[str, str]:
     return metadata
 
 
+def extract_axis_reference_map(df: pd.DataFrame) -> dict[str, str]:
+    """
+    Карта ось -> идентификатор данных (например RO10819), чтобы
+    автоматически подставлять значения в нижние информационные блоки.
+    """
+    working = df.copy()
+    working.columns = [str(c).strip() for c in working.columns]
+    cols = list(working.columns)
+
+    axis_col = _pick_column(cols, ["measobject.name", "achse", "axis"])
+    ref_col = _pick_column(cols, ["measobject.prop.value.0", "prop.value", "value.0"])
+    if not (axis_col and ref_col):
+        return {}
+
+    out: dict[str, str] = {}
+    for _, row in working.iterrows():
+        axis_raw = str(row[axis_col])
+        axis_match = re.search(r"(\d+)", axis_raw)
+        if not axis_match:
+            continue
+        axis = axis_match.group(1)
+        ref = str(row[ref_col]).strip()
+        if ref and ref.lower() != "nan" and axis not in out:
+            out[axis] = ref
+    return out
+
+
 def _detect_delimiter(lines: list[str]) -> str:
     candidates = [";", "\t", ",", "|"]
     sample = [line for line in lines[:50] if line.strip()]
