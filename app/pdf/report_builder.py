@@ -214,6 +214,7 @@ def build_et6_axis_matrix_report(
         "<para align='right'><b>(YKA) CALIPRI</b><br/>"
         f"<font size='8'>{metadata.get('Datum', '')}</font></para>"
     )
+
     # 3мм зазор между левым и правым блоком метаданных.
     top_header = Table(
         [[left_header_table, "", right_header_table, Paragraph(brand_text, styles["Title"])]],
@@ -229,6 +230,7 @@ def build_et6_axis_matrix_report(
             ]
         )
     )
+
     story.append(top_header)
     story.append(Spacer(1, 0.5 * mm))  # почти вплотную к первой таблице
 
@@ -244,17 +246,23 @@ def build_et6_axis_matrix_report(
         headers = [str(c) for c in input_df.columns]
         rows = [headers]
         cell_classes: dict[tuple[int, int], str] = {}
+
         for row_idx, (_, row) in enumerate(input_df.fillna("").iterrows(), start=1):
             parsed_row: list[str] = []
+
             for col_idx, value in enumerate(row.tolist()):
                 text = str(value)
                 cls = ""
+
                 if "|||" in text:
                     text, cls = text.split("|||", 1)
                     cls = cls.strip().lower()
+
                 parsed_row.append(text)
+
                 if cls in {"n.i.o", "achtung"}:
                     cell_classes[(col_idx, row_idx)] = cls
+
             rows.append(parsed_row)
 
         table = Table(rows, repeatRows=1)
@@ -294,28 +302,62 @@ def build_et6_axis_matrix_report(
         return table
 
     story.append(build_matrix_table(matrix_df))
+
     if matrix_df_secondary is not None:
         # 4мм расстояние между двумя таблицами осей.
         story.append(Spacer(1, 4 * mm))
         story.append(build_matrix_table(matrix_df_secondary))
 
     axis_reference_map = axis_reference_map or {}
+
     def axis_ref(axis: str) -> str:
         return axis_reference_map.get(axis, "---")
 
     # Нижние информационные блоки.
-    story.append(Spacer(1, 3 * mm))
+
+    story.append(Spacer(1, 2 * mm))
+    story.append(Paragraph("<b>Flirt 3 CHI (ENR)</b>", styles["Heading3"]))
+    story.append(Spacer(1, 1 * mm))
+
+    flirt_rows = [
+        ["Mittlerer Raddurchmesser² im DG", "Gesamte Beilagendicke\nKompensation Radverschleiss je DG:"],
+        ["Laufdrehgestell\n760 mm - 725 mm\n(725+5/0 – 690) mm", "0 mm\n15 mm"],
+        ["Motordrehgestell\n920 mm - 885 mm\n(885+5/0 – 850) mm", "0 mm\n15 mm"],
+    ]
+
+    flirt_table = Table(flirt_rows, colWidths=[420, 370])
+    flirt_table.setStyle(
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("FONTSIZE", (0, 0), (-1, -1), 8),
+                ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, -1), 2),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+            ]
+        )
+    )
+
     footer_left_title = "<b>REDBOX:</b>"
     footer_left = (
         "<b>Parameter</b><br/>"
         f"Aw:Achse 1, 2 = Achse 11 {axis_ref('11')}<br/>"
         f"Bw:Achse 1, 2 = Achse 21 {axis_ref('21')}"
     )
+
     footer_center = (
         "<b>SCU Konfiguration</b><br/>"
-        f"Aw:<br/>   RADDM1 = Achse 13 {axis_ref('13')}, <br/>   RADDM2 = Achse 12 {axis_ref('12')}<br/>"
-        f"Bw:<br/>   RADDM1 = Achse 23 {axis_ref('23')}, <br/>   RADDM2 = Achse 22 {axis_ref('22')}"
+        f"Aw:<br/>"
+        f"   RADDM1 = Achse 13 {axis_ref('13')}, <br/>"
+        f"   RADDM2 = Achse 12 {axis_ref('12')}<br/>"
+        f"Bw:<br/>"
+        f"   RADDM1 = Achse 23 {axis_ref('23')}, <br/>"
+        f"   RADDM2 = Achse 22 {axis_ref('22')}"
     )
+
     footer_right_title = "<b>PZB</b>"
     footer_right = (
         f"Aw:Achse 13 {axis_ref('13')}<br/>"
@@ -344,9 +386,13 @@ def build_et6_axis_matrix_report(
         )
     )
 
+    # PZB теперь имеет такую же ширину, как REDBOX / SCU.
     right_cell = Table(
-        [[Paragraph(footer_right_title, styles["Heading3"])], [Paragraph(footer_right, styles["Normal"])]],
-        colWidths=[250],
+        [
+            [Paragraph(footer_right_title, styles["Heading3"])],
+            [Paragraph(footer_right, styles["Normal"])],
+        ],
+        colWidths=[540],
     )
     right_cell.setStyle(
         TableStyle(
@@ -361,7 +407,14 @@ def build_et6_axis_matrix_report(
         )
     )
 
-    footer_table = Table([[redbox_table, right_cell]], colWidths=[540, 250])
+    # Здесь PZB ставится НЕ справа, а под REDBOX / SCU.
+    footer_table = Table(
+        [
+            [redbox_table],
+            [right_cell],
+        ],
+        colWidths=[540],
+    )
     footer_table.setStyle(
         TableStyle(
             [
@@ -373,31 +426,12 @@ def build_et6_axis_matrix_report(
             ]
         )
     )
-    story.append(footer_table)
 
-    story.append(Spacer(1, 2 * mm))
-    story.append(Paragraph("<b>Flirt 3 CHI (ENR)</b>", styles["Heading3"]))
-    story.append(Spacer(1, 1 * mm))
-    flirt_rows = [
-        ["Mittlerer Raddurchmesser² im DG", "Gesamte Beilagendicke\nKompensation Radverschleiss je DG:"],
-        ["Laufdrehgestell\n760 mm - 725 mm\n(725+5/0 – 690) mm", "0 mm\n15 mm"],
-        ["Motordrehgestell\n920 mm - 885 mm\n(885+5/0 – 850) mm", "0 mm\n15 mm"],
-    ]
-    flirt_table = Table(flirt_rows, colWidths=[420, 370])
-    flirt_table.setStyle(
-        TableStyle(
-            [
-                ("GRID", (0, 0), (-1, -1), 1, colors.black),
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("FONTSIZE", (0, 0), (-1, -1), 8),
-                ("LEFTPADDING", (0, 0), (-1, -1), 4),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-                ("TOPPADDING", (0, 0), (-1, -1), 2),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-            ]
-        )
-    )
+    # ВАЖНО:
+    # Здесь задаётся порядок вывода нижних таблиц.
+    # Сначала Flirt 3 CHI (ENR), потом REDBOX / SCU, а PZB внутри footer_table стоит снизу.
     story.append(flirt_table)
+    story.append(Spacer(1, 3 * mm))
+    story.append(footer_table)
 
     doc.build(story)
