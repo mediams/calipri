@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+import re
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, landscape
@@ -234,6 +235,36 @@ def build_et6_axis_matrix_report(
     story.append(top_header)
     story.append(Spacer(1, 0.5 * mm))  # почти вплотную к первой таблице
 
+    axis_reference_map = axis_reference_map or {}
+
+    def axis_ref(axis: str) -> str:
+        return axis_reference_map.get(axis, "---")
+
+    def _extract_numeric_values(raw: str) -> list[float]:
+        found = re.findall(r"\d+[.,]\d+|\d+", str(raw))
+        values: list[float] = []
+        for chunk in found:
+            try:
+                values.append(float(chunk.replace(",", ".")))
+            except ValueError:
+                continue
+        return values
+
+    def _is_axis_out_of_range(axis: str) -> bool:
+        values = _extract_numeric_values(axis_ref(axis))
+        if not values:
+            return False
+
+        motor_axes = {"11", "12", "21", "22"}
+        if axis in motor_axes:
+            low, high = 920.0, 990.0
+        else:
+            low, high = sorted((760.0, 730.0))
+
+        return any(not (low <= value <= high) for value in values)
+
+    out_of_range_axes = {axis for axis in axis_reference_map if _is_axis_out_of_range(axis)}
+
     def build_matrix_table(input_df):
         if "Name" in input_df.columns and len(input_df.columns) > 1:
             value_cols = [c for c in input_df.columns if c != "Name"]
@@ -288,6 +319,16 @@ def build_et6_axis_matrix_report(
             ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
         ]
 
+        for col_idx, header in enumerate(headers):
+            if col_idx == 0:
+                continue
+            match = re.match(r"^\s*(\d+)\s*[LR]\s*$", str(header), flags=re.IGNORECASE)
+            if not match:
+                continue
+            axis = match.group(1)
+            if axis in out_of_range_axes:
+                style_commands.append(("LINEBELOW", (col_idx, 0), (col_idx, 0), 1.2, colors.white))
+
         for (col_idx, row_idx), cls in cell_classes.items():
             if cls == "n.i.o":
                 style_commands.append(
@@ -307,11 +348,6 @@ def build_et6_axis_matrix_report(
         # 4мм расстояние между двумя таблицами осей.
         story.append(Spacer(1, 4 * mm))
         story.append(build_matrix_table(matrix_df_secondary))
-
-    axis_reference_map = axis_reference_map or {}
-
-    def axis_ref(axis: str) -> str:
-        return axis_reference_map.get(axis, "---")
 
     # Нижние информационные блоки.
 
@@ -351,17 +387,17 @@ def build_et6_axis_matrix_report(
     footer_center = (
         "<b>SCU Konfiguration</b><br/>"
         f"Aw:<br/>"
-        f"   RADDM1 = Achse 13 {axis_ref('13')}, <br/>"
+        f"   RADDM1 = Achse 14 {axis_ref('14')}, <br/>"
         f"   RADDM2 = Achse 12 {axis_ref('12')}<br/>"
         f"Bw:<br/>"
-        f"   RADDM1 = Achse 23 {axis_ref('23')}, <br/>"
+        f"   RADDM1 = Achse 24 {axis_ref('24')}, <br/>"
         f"   RADDM2 = Achse 22 {axis_ref('22')}"
     )
 
     footer_right_title = "<b>PZB</b>"
     footer_right = (
-        f"Aw:Achse 13 {axis_ref('13')}<br/>"
-        f"Bw:Achse 23 {axis_ref('23')}"
+        f"Aw:Achse 14 {axis_ref('14')}<br/>"
+        f"Bw:Achse 24 {axis_ref('24')}"
     )
 
     redbox_table = Table(
