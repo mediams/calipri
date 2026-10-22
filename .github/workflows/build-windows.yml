@@ -28,7 +28,7 @@ jobs:
         run: >
           python -m PyInstaller --noconfirm --clean --windowed
           --name YKA_Calipri_to_PDF
-          --distpath dist --workpath build_tmp --specpath build_spec
+          --distpath dist --workpath build_tmp --specpath .
           --paths .
           --add-data "config;config"
           --collect-all numpy --collect-all pandas
