@@ -1,0 +1,56 @@
+name: Build Windows executable
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build-windows.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          architecture: x64
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip wheel setuptools
+          python -m pip install -r requirements.txt
+          python -m pip install pyinstaller
+      - name: Build Windows application
+        run: >
+          python -m PyInstaller --noconfirm --clean --windowed
+          --name YKA_Calipri_to_PDF
+          --distpath dist --workpath build_tmp --specpath build_spec
+          --paths .
+          --add-data "config;config"
+          --collect-all numpy --collect-all pandas
+          app/main.py
+      - name: Verify packaged application starts
+        shell: pwsh
+        run: |
+          $exe = Resolve-Path "dist/YKA_Calipri_to_PDF/YKA_Calipri_to_PDF.exe"
+          if (!(Test-Path "dist/YKA_Calipri_to_PDF/_internal/config/defaults.json")) {
+            throw "Packaged config is missing"
+          }
+          $process = Start-Process -FilePath $exe -PassThru
+          Start-Sleep -Seconds 10
+          $process.Refresh()
+          if ($process.HasExited) {
+            throw "Application exited unexpectedly: $($process.ExitCode)"
+          }
+          Stop-Process -Id $process.Id
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: YKA_Calipri_to_PDF-Windows-x64
+          path: dist/YKA_Calipri_to_PDF/
+          if-no-files-found: error
+          retention-days: 30
