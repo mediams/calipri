@@ -257,12 +257,11 @@ def build_et6_axis_matrix_report(
 
         motor_axes = {"11", "12", "21", "22"}
 
-        if axis in motor_axes:
-            low, high = sorted((920.0, 890.0))
-        else:
-            low, high = sorted((760.0, 730.0))
+        # Only flag diameters below the existing wear threshold.
+        # Nominal diameters (760/920 mm) and higher do not trigger this mark.
+        low = 890.0 if axis in motor_axes else 730.0
 
-        return any(not (low <= value <= high) for value in values)
+        return any(value < low for value in values)
 
     out_of_range_axes = {axis for axis in axis_reference_map if _is_axis_out_of_range(axis)}
 
