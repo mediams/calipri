@@ -7,6 +7,8 @@ __pycache__/
 # Virtual environment
 .venv/
 venv/
+.venv_build/
+_.venv/
 
 # Build folders
 build/
@@ -24,3 +26,4 @@ build_portable.bat
 build_windows.bat
 ET6Analyzer.spec
 YKA_Calipri_to_PDF.spec
+build_portable_fixed.bat

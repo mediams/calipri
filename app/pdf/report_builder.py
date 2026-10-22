@@ -256,8 +256,9 @@ def build_et6_axis_matrix_report(
             return False
 
         motor_axes = {"11", "12", "21", "22"}
+
         if axis in motor_axes:
-            low, high = 920.0, 990.0
+            low, high = sorted((920.0, 890.0))
         else:
             low, high = sorted((760.0, 730.0))
 
@@ -327,7 +328,7 @@ def build_et6_axis_matrix_report(
                 continue
             axis = match.group(1)
             if axis in out_of_range_axes:
-                style_commands.append(("LINEBELOW", (col_idx, 0), (col_idx, 0), 1.2, colors.white))
+                style_commands.append(("LINEBELOW", (col_idx, 0), (col_idx, 0), 1.2, colors.red))
 
         for (col_idx, row_idx), cls in cell_classes.items():
             if cls == "n.i.o":
@@ -387,10 +388,10 @@ def build_et6_axis_matrix_report(
     footer_center = (
         "<b>SCU Konfiguration</b><br/>"
         f"Aw:<br/>"
-        f"   RADDM1 = Achse 14 {axis_ref('14')}, <br/>"
+        f"   RADDM1 = Achse 13 {axis_ref('13')}, <br/>"
         f"   RADDM2 = Achse 12 {axis_ref('12')}<br/>"
         f"Bw:<br/>"
-        f"   RADDM1 = Achse 24 {axis_ref('24')}, <br/>"
+        f"   RADDM1 = Achse 23 {axis_ref('23')}, <br/>"
         f"   RADDM2 = Achse 22 {axis_ref('22')}"
     )
 
