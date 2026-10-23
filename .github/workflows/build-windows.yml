@@ -5,6 +5,9 @@ on:
   push:
     paths:
       - '.github/workflows/build-windows.yml'
+      - 'app/**'
+      - 'config/**'
+      - 'requirements.txt'
 
 permissions:
   contents: read
