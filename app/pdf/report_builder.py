@@ -305,12 +305,16 @@ def build_et6_axis_matrix_report(
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
             ("FONTSIZE", (0, 0), (-1, 0), 8),
             ("FONTSIZE", (0, 1), (-1, -1), 7),
+            # 12 pt body rows instead of 16 pt; preserve the 7 pt text size.
+            ("LEADING", (0, 1), (-1, -1), 9),
             ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
             ("ALIGN", (1, 0), (-1, -1), "CENTER"),
             ("ALIGN", (0, 0), (0, -1), "LEFT"),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("TOPPADDING", (0, 0), (-1, -1), 2),
             ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+            ("TOPPADDING", (0, 1), (-1, -1), 1.5),
+            ("BOTTOMPADDING", (0, 1), (-1, -1), 1.5),
             ("LINEBELOW", (0, 0), (-1, 0), 1.2, colors.black),
             ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
         ]
