@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from xml.sax.saxutils import escape
 import re
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, landscape
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import mm
 from reportlab.platypus import (
@@ -187,53 +188,48 @@ def build_et6_axis_matrix_report(
     story = []
 
     metadata = metadata or {}
-    left_header_rows = [
-        ["MeasPlan.Name", metadata.get("MeasPlan.Name", "")],
-        ["Name", metadata.get("Name", "")],
-    ]
-    right_header_rows = [
-        ["Fahrzeug", metadata.get("Fahrzeug", "")],
-        ["Kilometerstand", metadata.get("Kilometerstand", "")],
-    ]
-
-    left_header_table = Table(left_header_rows, colWidths=[150, 120])
-    right_header_table = Table(right_header_rows, colWidths=[150, 120])
-
-    base_header_style = TableStyle(
-        [
-            ("GRID", (0, 0), (-1, -1), 1, colors.grey),
-            ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
-            ("FONTSIZE", (0, 0), (-1, -1), 9),
-            ("LEFTPADDING", (0, 0), (-1, -1), 4),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-        ]
+    # Four metadata fields share one compact row above the measurement table.
+    header_style = ParagraphStyle(
+        "CompactMetadata", parent=styles["Normal"], fontSize=8.5, leading=10,
+        spaceBefore=0, spaceAfter=0,
     )
-    left_header_table.setStyle(base_header_style)
-    right_header_table.setStyle(base_header_style)
-
+    fields = ("MeasPlan.Name", "Name", "Fahrzeug", "Kilometerstand")
+    metadata_table = Table(
+        [[Paragraph(
+            f"<b>{label}:</b> {escape(str(metadata.get(label, '')))}",
+            header_style,
+        ) for label in fields]],
+        colWidths=[155, 165, 115, 155],
+    )
+    metadata_table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.6, colors.grey),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    brand_style = ParagraphStyle(
+        "CompactBrand", parent=styles["Normal"], alignment=2,
+        fontSize=14, leading=15, spaceBefore=0, spaceAfter=0,
+    )
     brand_text = (
-        "<para align='right'><b>(YKA) CALIPRI</b><br/>"
-        f"<font size='8'>{metadata.get('Datum', '')}</font></para>"
+        "<b>(YKA) CALIPRI</b><br/>"
+        f"<font size='8'>{escape(str(metadata.get('Datum', '')))}</font>"
     )
-
-    # 3мм зазор между левым и правым блоком метаданных.
     top_header = Table(
-        [[left_header_table, "", right_header_table, Paragraph(brand_text, styles["Title"])]],
-        colWidths=[270, 5 * mm, 300, 217],
+        [[metadata_table, "", Paragraph(brand_text, brand_style)]],
+        colWidths=[590, 10, 190],
     )
-    top_header.setStyle(
-        TableStyle(
-            [
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 0),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
-                # ("LINEBEFORE", (2, 0), (2, 0), 0, colors.white),
-            ]
-        )
-    )
-
+    top_header.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 0),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+        ("TOPPADDING", (0, 0), (-1, -1), 0),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+    ]))
     story.append(top_header)
-    story.append(Spacer(1, 0.5 * mm))  # почти вплотную к первой таблице
+    story.append(Spacer(1, 0.5 * mm))
 
     axis_reference_map = axis_reference_map or {}
 
