@@ -261,6 +261,18 @@ def build_et6_axis_matrix_report(
 
     out_of_range_axes = {axis for axis in axis_reference_map if _is_axis_out_of_range(axis)}
 
+    axis_header_style = ParagraphStyle(
+        "AxisWarningHeader", fontName="Helvetica-Bold", fontSize=8,
+        leading=9, alignment=1, textColor=colors.HexColor("#0f172a"),
+        spaceBefore=0, spaceAfter=0,
+    )
+
+    def marked_axis_header(label: str):
+        return Paragraph(
+            f'<font color="red">-</font>{escape(label)}<font color="red">-</font>',
+            axis_header_style,
+        )
+
     def build_matrix_table(input_df):
         if "Name" in input_df.columns and len(input_df.columns) > 1:
             value_cols = [c for c in input_df.columns if c != "Name"]
@@ -285,11 +297,16 @@ def build_et6_axis_matrix_report(
             top = ["Name"] + [""] * (len(headers) - 1)
             bottom = [""] + [""] * (len(headers) - 1)
             for col, axis in pairs:
-                top[col] = axis
+                top[col] = marked_axis_header(axis) if axis in out_of_range_axes else axis
                 bottom[col:col + 2] = ["L", "R"]
             rows = [top, bottom]
         else:
-            rows = [headers]
+            display_headers = list(headers)
+            for col, header in enumerate(headers[1:], start=1):
+                match = re.fullmatch(r"\s*(\d+)\s*[LR]\s*", header, flags=re.IGNORECASE)
+                if match and match.group(1) in out_of_range_axes:
+                    display_headers[col] = marked_axis_header(header)
+            rows = [display_headers]
         header_count = len(rows)
         last_header = header_count - 1
         cell_classes: dict[tuple[int, int], str] = {}
@@ -342,13 +359,6 @@ def build_et6_axis_matrix_report(
             for col, axis in pairs:
                 style_commands.append(("SPAN", (col, 0), (col + 1, 0)))
                 style_commands.append(("LINEAFTER", (col + 1, 0), (col + 1, -1), 1, colors.black))
-
-        for col_idx, header in enumerate(headers[1:], start=1):
-            match = re.fullmatch(r"\s*(\d+)\s*[LR]\s*", header, flags=re.IGNORECASE)
-            if match and match.group(1) in out_of_range_axes:
-                style_commands.append(
-                    ("LINEBELOW", (col_idx, last_header), (col_idx, last_header), 1.2, colors.red)
-                )
 
         for (col_idx, row_idx), cls in cell_classes.items():
             if cls == "n.i.o":
@@ -452,3 +462,4 @@ def build_et6_axis_matrix_report(
     story.append(footer_table)
 
     doc.build(story)
+
