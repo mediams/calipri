@@ -377,91 +377,51 @@ def build_et6_axis_matrix_report(
         )
     )
 
-    footer_left_title = "<b>REDBOX:</b>"
+    def axis_min_ref(axis: str) -> str:
+        # The footer uses the smaller L/R diameter; keep both measurements
+        # in axis_reference_map for the measurement table and warning logic.
+        values = _extract_numeric_values(axis_ref(axis))
+        if len(values) != 2:
+            return "(---)"
+        return "(" + f"{min(values):.2f}".replace(".", ",") + ")"
+
+    footer_style = ParagraphStyle(
+        "CompactConfiguration", parent=styles["Normal"],
+        fontSize=8.5, leading=11, spaceBefore=0, spaceAfter=0,
+    )
     footer_left = (
-        "<b>Parameter</b><br/>"
-        f"Aw:Achse 1, 2 = Achse 11 {axis_ref('11')}<br/>"
-        f"Bw:Achse 1, 2 = Achse 21 {axis_ref('21')}"
+        "<b>REDBOX: Parameter</b><br/>"
+        f"Aw: Achse 1, 2 = Achse 11 {axis_min_ref('11')}<br/>"
+        f"Bw: Achse 1, 2 = Achse 21 {axis_min_ref('21')}"
     )
-
     footer_center = (
-        "<b>SCU Konfiguration</b><br/>"
-        f"Aw:<br/>"
-        f"   RADDM1 = Achse 13 {axis_ref('13')}, <br/>"
-        f"   RADDM2 = Achse 12 {axis_ref('12')}<br/>"
-        f"Bw:<br/>"
-        f"   RADDM1 = Achse 23 {axis_ref('23')}, <br/>"
-        f"   RADDM2 = Achse 22 {axis_ref('22')}"
+        "<b>REDBOX: SCU Konfiguration</b><br/>"
+        f"Aw: RADDM1 = Achse 13 {axis_min_ref('13')}, "
+        f"RADDM2 = Achse 12 {axis_min_ref('12')}<br/>"
+        f"Bw: RADDM1 = Achse 23 {axis_min_ref('23')}, "
+        f"RADDM2 = Achse 22 {axis_min_ref('22')}"
     )
-
-    footer_right_title = "<b>PZB</b>"
-    footer_right = (
-        f"Aw:Achse 14 {axis_ref('14')}<br/>"
-        f"Bw:Achse 24 {axis_ref('24')}"
+    footer_pzb = (
+        f"<b>PZB:</b> Aw: Achse 14 {axis_min_ref('14')}; "
+        f"Bw: Achse 24 {axis_min_ref('24')}"
     )
-
-    redbox_table = Table(
-        [
-            [Paragraph(footer_left_title, styles["Heading3"]), ""],
-            [Paragraph(footer_left, styles["Normal"]), Paragraph(footer_center, styles["Normal"])],
-        ],
-        colWidths=[255, 285],
-    )
-    redbox_table.setStyle(
-        TableStyle(
-            [
-                ("SPAN", (0, 0), (1, 0)),
-                ("GRID", (0, 0), (-1, -1), 1, colors.black),
-                ("LINEAFTER", (0, 1), (0, 1), 0.6, colors.grey),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 4),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-                ("TOPPADDING", (0, 0), (-1, -1), 2),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-            ]
-        )
-    )
-
-    # PZB теперь имеет такую же ширину, как REDBOX / SCU.
-    right_cell = Table(
-        [
-            [Paragraph(footer_right_title, styles["Heading3"])],
-            [Paragraph(footer_right, styles["Normal"])],
-        ],
-        colWidths=[540],
-    )
-    right_cell.setStyle(
-        TableStyle(
-            [
-                ("GRID", (0, 0), (-1, -1), 1, colors.black),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 4),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-                ("TOPPADDING", (0, 0), (-1, -1), 2),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-            ]
-        )
-    )
-
-    # Здесь PZB ставится НЕ справа, а под REDBOX / SCU.
     footer_table = Table(
         [
-            [redbox_table],
-            [right_cell],
+            [Paragraph(footer_left, footer_style),
+             Paragraph(footer_center, footer_style)],
+            [Paragraph(footer_pzb, footer_style), ""],
         ],
-        colWidths=[540],
+        colWidths=[285, 505],
     )
-    footer_table.setStyle(
-        TableStyle(
-            [
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 0),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
-                ("TOPPADDING", (0, 0), (-1, -1), 0),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
-            ]
-        )
-    )
+    footer_table.setStyle(TableStyle([
+        ("SPAN", (0, 1), (1, 1)),
+        ("GRID", (0, 0), (-1, -1), 1, colors.black),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 3),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+    ]))
 
     # ВАЖНО:
     # Здесь задаётся порядок вывода нижних таблиц.
