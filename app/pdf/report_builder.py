@@ -271,63 +271,84 @@ def build_et6_axis_matrix_report(
             ]
 
         headers = [str(c) for c in input_df.columns]
-        rows = [headers]
+        pairs = []
+        grouped_headers = headers[0] == "Name" and (len(headers) - 1) % 2 == 0
+        for col in range(1, len(headers), 2):
+            left = re.fullmatch(r"(\d+)L", headers[col], flags=re.IGNORECASE)
+            right = re.fullmatch(r"(\d+)R", headers[col + 1], flags=re.IGNORECASE) if col + 1 < len(headers) else None
+            if not left or not right or left.group(1) != right.group(1):
+                grouped_headers = False
+                break
+            pairs.append((col, left.group(1)))
+
+        if grouped_headers:
+            top = ["Name"] + [""] * (len(headers) - 1)
+            bottom = [""] + [""] * (len(headers) - 1)
+            for col, axis in pairs:
+                top[col] = axis
+                bottom[col:col + 2] = ["L", "R"]
+            rows = [top, bottom]
+        else:
+            rows = [headers]
+        header_count = len(rows)
+        last_header = header_count - 1
         cell_classes: dict[tuple[int, int], str] = {}
+        display_labels = {
+            "Bremse Innen WS": "Bremse Innen WS (Rest i)",
+            "Bremse Außen WS": "Bremse Außen WS (Rest a)",
+        }
 
-        for row_idx, (_, row) in enumerate(input_df.fillna("").iterrows(), start=1):
+        for row_idx, (_, row) in enumerate(input_df.fillna("").iterrows(), start=header_count):
             parsed_row: list[str] = []
-
             for col_idx, value in enumerate(row.tolist()):
                 text = str(value)
                 cls = ""
-
                 if "|||" in text:
                     text, cls = text.split("|||", 1)
                     cls = cls.strip().lower()
-
+                if col_idx == 0:
+                    text = display_labels.get(text, text)
                 parsed_row.append(text)
-
                 if cls in {"n.i.o", "achtung"}:
                     cell_classes[(col_idx, row_idx)] = cls
-
             rows.append(parsed_row)
 
-        table = Table(rows, repeatRows=1)
-        col_count = len(headers)
-
-        first_col_width = 95
-        other_width = max(30, (790 - first_col_width) / max(1, (col_count - 1)))
-        table._argW = [first_col_width] + [other_width] * (col_count - 1)
-
+        # Widen labels for Rest i/a while retaining the full 790 pt table width.
+        first_col_width = 125
+        other_width = (790 - first_col_width) / max(1, len(headers) - 1)
+        table = Table(
+            rows, repeatRows=header_count,
+            colWidths=[first_col_width] + [other_width] * (len(headers) - 1),
+        )
         style_commands = [
-            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#93c5fd")),
-            ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#0f172a")),
-            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-            ("FONTSIZE", (0, 0), (-1, 0), 8),
-            ("FONTSIZE", (0, 1), (-1, -1), 7),
-            # 12 pt body rows instead of 16 pt; preserve the 7 pt text size.
-            ("LEADING", (0, 1), (-1, -1), 9),
+            ("BACKGROUND", (0, 0), (-1, last_header), colors.HexColor("#93c5fd")),
+            ("TEXTCOLOR", (0, 0), (-1, last_header), colors.HexColor("#0f172a")),
+            ("FONTNAME", (0, 0), (-1, last_header), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, last_header), 8),
+            ("FONTSIZE", (0, header_count), (-1, -1), 7),
+            # 10.5 pt rows: 1.5 pt (about 2 px at 96 dpi) less than before.
+            ("LEADING", (0, 0), (-1, -1), 9),
+            ("TOPPADDING", (0, 0), (-1, -1), 0.75),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 0.75),
             ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
             ("ALIGN", (1, 0), (-1, -1), "CENTER"),
             ("ALIGN", (0, 0), (0, -1), "LEFT"),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ("TOPPADDING", (0, 0), (-1, -1), 2),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-            ("TOPPADDING", (0, 1), (-1, -1), 1.5),
-            ("BOTTOMPADDING", (0, 1), (-1, -1), 1.5),
-            ("LINEBELOW", (0, 0), (-1, 0), 1.2, colors.black),
+            ("LINEBELOW", (0, last_header), (-1, last_header), 1.2, colors.black),
             ("LINEAFTER", (0, 0), (0, -1), 1.2, colors.black),
         ]
+        if grouped_headers:
+            style_commands.append(("SPAN", (0, 0), (0, 1)))
+            for col, axis in pairs:
+                style_commands.append(("SPAN", (col, 0), (col + 1, 0)))
+                style_commands.append(("LINEAFTER", (col + 1, 0), (col + 1, -1), 1, colors.black))
 
-        for col_idx, header in enumerate(headers):
-            if col_idx == 0:
-                continue
-            match = re.match(r"^\s*(\d+)\s*[LR]\s*$", str(header), flags=re.IGNORECASE)
-            if not match:
-                continue
-            axis = match.group(1)
-            if axis in out_of_range_axes:
-                style_commands.append(("LINEBELOW", (col_idx, 0), (col_idx, 0), 1.2, colors.red))
+        for col_idx, header in enumerate(headers[1:], start=1):
+            match = re.fullmatch(r"\s*(\d+)\s*[LR]\s*", header, flags=re.IGNORECASE)
+            if match and match.group(1) in out_of_range_axes:
+                style_commands.append(
+                    ("LINEBELOW", (col_idx, last_header), (col_idx, last_header), 1.2, colors.red)
+                )
 
         for (col_idx, row_idx), cls in cell_classes.items():
             if cls == "n.i.o":
