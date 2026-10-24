@@ -82,8 +82,8 @@ def build_report(
 
     table = Table(rows, repeatRows=1)
     style_commands = [
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1d4ed8")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#93c5fd")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#0f172a")),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
     ]
@@ -137,8 +137,8 @@ def build_et6_single_page_report(
         table.setStyle(
             TableStyle(
                 [
-                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1d4ed8")),
-                    ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#93c5fd")),
+                    ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#0f172a")),
                     ("GRID", (0, 0), (-1, -1), 0.3, colors.grey),
                     ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
                     ("FONTSIZE", (0, 0), (-1, -1), 6),
@@ -215,7 +215,7 @@ def build_et6_axis_matrix_report(
     )
     brand_text = (
         "<b>(YKA) CALIPRI</b><br/>"
-        f"<font size='8'>{escape(str(metadata.get('Datum', '')))}</font>"
+        f"<font size='8'>{escape(str(metadata.get('Datum', '')).replace(',', '.'))}</font>"
     )
     top_header = Table(
         [[metadata_table, "", Paragraph(brand_text, brand_style)]],
@@ -300,8 +300,8 @@ def build_et6_axis_matrix_report(
         table._argW = [first_col_width] + [other_width] * (col_count - 1)
 
         style_commands = [
-            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1d4ed8")),
-            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#93c5fd")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#0f172a")),
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
             ("FONTSIZE", (0, 0), (-1, 0), 8),
             ("FONTSIZE", (0, 1), (-1, -1), 7),
@@ -356,9 +356,9 @@ def build_et6_axis_matrix_report(
     story.append(Spacer(1, 1 * mm))
 
     flirt_rows = [
-        ["Mittlerer Raddurchmesser² im DG", "Gesamte Beilagendicke\nKompensation Radverschleiss je DG:"],
-        ["Laufdrehgestell\n760 mm - 725 mm\n(725+5/0 – 690) mm", "0 mm\n15 mm"],
-        ["Motordrehgestell\n920 mm - 885 mm\n(885+5/0 – 850) mm", "0 mm\n15 mm"],
+        ["Mittlerer Raddurchmesser² im DG", "Gesamte Beilagendicke Kompensation Radverschleiss je DG:"],
+        ["Laufdrehgestell 760 mm - 725 mm (725+5/0 - 690) mm", "0 mm / 15 mm"],
+        ["Motordrehgestell 920 mm - 885 mm (885+5/0 - 850) mm", "0 mm / 15 mm"],
     ]
 
     flirt_table = Table(flirt_rows, colWidths=[420, 370])
